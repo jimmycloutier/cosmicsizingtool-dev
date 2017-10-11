@@ -1,0 +1,75 @@
+{
+  "name": "Cosmic-Sizing-Tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server",
+    "dev": "webpack --watch",
+    "min": "webpack",
+    "prod": "webpack -p",
+    "test": "jest",
+    "testmocha": "mocha --compilers js:babel-register --recursive 'src/client/test/**/*.js'  -R spec --ui bdd",
+    "testmocha:watch": "npm testmocha -- --watch"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/node_modules/webpack-babel-jest",
+    "testFileExtensions": [
+      "es6",
+      "js"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "es6"
+    ],
+    "unmockedModulePathPatterns": [
+      "React",
+      "react-dom",
+      "react-addons-test-utils"
+    ]
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-react": "^6.5.0",
+    "bootstrap": "^3.3.6",
+    "history": "^4.7.2",
+    "jquery": "^2.2.1",
+    "less": "^2.6.1",
+    "react": "^15.0.1",
+    "react-bootstrap": "^0.28.3",
+    "react-css-modules": "^3.7.6",
+    "react-dom": "^15.0.1",
+    "react-redux": "^4.4.1",
+    "react-router": "^2.8.1",
+    "react-router-redux": "^5.0.0-alpha.6",
+    "redux": "^3.3.1",
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.0.1",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "devDependencies": {
+    "babel-polyfill": "^6.7.4",
+    "babel-register": "^6.7.2",
+    "css-loader": "^0.23.1",
+    "expect": "^1.16.0",
+    "file-loader": "^0.8.5",
+    "isomorphic-fetch": "^2.2.1",
+    "isomorphic-style-loader": "0.0.12",
+    "less-loader": "^2.2.3",
+    "mocha": "^2.4.5",
+    "mocha-nock-fixtures": "^0.2.0",
+    "postcss-loader": "^0.8.2",
+    "react-addons-test-utils": "^15.0.1",
+    "redux-mock-store": "^1.0.2",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.14",
+    "webpack-babel-jest": "^1.0.4",
+    "webpack-merge": "^0.8.4"
+  }
+}
