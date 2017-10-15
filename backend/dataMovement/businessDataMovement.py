@@ -39,7 +39,7 @@ class BusinessDataMovement(object):
         dm = DataMovements.query.filter(DataMovements.id == dm_id).first()
 
     @staticmethod
-    def update(organization_id, project_id, fp_id, dm_id):
+    def update(organization_id, project_id, fp_id, dm_id, received_dm):
         """Update a specific datamovement <dm_id>"""
         if not received_dm:
             return False
