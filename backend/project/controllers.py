@@ -84,13 +84,13 @@ def apply_pattern(organization_id, project_id, pattern_id):
     fps = BusinessPatternFunctionalProcess.get_functionalprocesses(pattern_id)
     for fp in fps:
         fp_poco = fp.to_poco_obj()
-        BusinessFunctionalProcess.create_functionalprocesses(organization_id, project_id, fp_poco)
-        #Create Fp to project
+        new_fpId = BusinessFunctionalProcess.create_functionalprocesses(organization_id, project_id, fp_poco)
         #dms = BusinessPatternDataMovement.get_datamovements(pattern_id, fp_ip)
         #for dm in dms:
             #Create dm to project (with rename)
             #break
 
-    all_fps = {'FunctionalProcesses-ApplyPattern' : [fp.to_json() for fp in fps]}
+    #all_fps = {'FunctionalProcesses-ApplyPattern' : [fp.to_json() for fp in fps]}
+    all_fps = {'FunctionalProcesses-ApplyPattern' : new_fpId}
     return jsonify(all_fps)
 
