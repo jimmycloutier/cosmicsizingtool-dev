@@ -2,7 +2,7 @@ import types
 from flask import jsonify, request, abort, url_for
 from . import project
 from .businessProject import BusinessProject
-from utils import json2obj
+from utils import json2obj, json2dict
 
 
 #Test API route
@@ -68,7 +68,7 @@ def delete_project(organization_id, project_id):
     else:
         return jsonify({'message':'Project not found'}), 400
 
-@project.route("/v1.0/organizations/<organization_id>/projects/<project_id>/applypattern/<pattern_id>", methods=['GET'])
+@project.route("/v1.0/organizations/<organization_id>/projects/<project_id>/applypattern/<pattern_id>", methods=['GET', 'PATCH'])
 def apply_pattern(organization_id, project_id, pattern_id):
     """
     Apply a pattern to a projet
@@ -76,14 +76,14 @@ def apply_pattern(organization_id, project_id, pattern_id):
     specified in the pattern
     """
     if request.json:
-        received_renameList = json2obj(request.data)
+        received_renameList = json2dict(request.data)
     else:
-        received_renameList = None
+        received_renameList = {}
 
     success = BusinessProject.apply_pattern(organization_id,project_id, pattern_id,received_renameList )
 
     if success:
-        return jsonify({'message':'Pattern applied successfully'}), 200
+        return jsonify({'message':'Pattern applied successfully to project'}), 200
     else:
         return jsonify({'message':'Pattern not applied. Error'}), 400
 
