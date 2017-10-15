@@ -25,7 +25,6 @@ function getOrganizations() {
         return fetch(`http://127.0.0.1:5000/org/v1.0/organizations`)
             .then(response => response.json())
             .then(json => {
-                console.log(json)
                 dispatch(receiptOrganization(json.Organizations));
                 /*if(getState().uiState.idCatEnCours==-1){
                     dispatch(selectOrg(json[0].id));

@@ -1,4 +1,3 @@
-#Valid movement. Only EWRX are valid and only once.
 def isValidMove(movement):
     isValid = False
     validMove = ['E', 'W', 'R', 'X']
@@ -12,6 +11,4 @@ def isValidMove(movement):
                 isValid = False
                 break
 
-
     return isValid
-
