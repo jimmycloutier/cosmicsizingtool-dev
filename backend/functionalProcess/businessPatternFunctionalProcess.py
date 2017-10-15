@@ -24,7 +24,7 @@ class BusinessPatternFunctionalProcess(object):
         return new_fp.id
 
     @staticmethod
-    def patternfunctionalprocess(pattern_id, fp_id):
+    def functionalprocess(pattern_id, fp_id):
         """Get a specific functional process <fp_id>(related to a Pattern)"""
         fp = PatternFunctionalProcesses.query.filter(PatternFunctionalProcesses.id == fp_id).first()
         return fp

@@ -2,6 +2,7 @@ from flask import jsonify, request, abort
 from . import datamovement
 from .businessPatternDataMovement import BusinessPatternDataMovement
 from .businessDataMovement import BusinessDataMovement
+from utils import json2obj
 
 #test route
 @datamovement.route("/", methods=['GET'])
@@ -42,7 +43,7 @@ def create_datamovements(organization_id, project_id, fp_id):
     if not request.json or not 'Name' in request.json or 'Move' in request.json :
         abort(400)
 
-    received_dm = request.get_json()
+    received_dm = json2obj(request.data)
     success = BusinessDataMovement.create(organization_id, project_id, fp_id, received_dm)
     if success:
         return jsonify({'message': 'New Data movements created successfully', 'ID' : success}), 201
@@ -55,7 +56,7 @@ def create_patterndatamovements(pattern_id, fp_id):
     if not request.json or not 'Name' in request.json or 'Move' in request.json :
         abort(400)
 
-    received_dm = request.get_json()
+    received_dm = json2obj(request.data)
     success = BusinessPatternDataMovement.create(pattern_id,fp_id, received_dm)
     if success:
         return jsonify({'message': 'New Data movements created successfully', 'ID' : success}), 201
@@ -79,7 +80,7 @@ def update_datamovement(organization_id, project_id, fp_id, dm_id):
     """Update a specific datamovement <dm_id>"""
     if not request.json:
         abort(400)
-    received_dm = request.get_json()
+    received_dm = json2obj(request.data)
     success = BusinessDataMovement.update(organization_id,project_id, fp_id, dm_id, received_dm)
     if success:
         return jsonify({'message': 'Data Movement updated successfully'}), 202
@@ -92,7 +93,7 @@ def update_patterndatamovement(pattern_id, fp_id, dm_id):
     if not request.json:
         abort(400)
 
-    received_dm = request.get_json()
+    received_dm = json2obj(request.data)
     success = BusinessPatternDataMovement.update(pattern_id, fp_id, dm_id, received_dm)
 
     if success:

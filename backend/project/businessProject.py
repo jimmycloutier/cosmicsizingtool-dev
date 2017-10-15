@@ -1,6 +1,7 @@
 from models.projects import  Projects
 from models import db
 from functionalProcess import BusinessPatternFunctionalProcess, BusinessFunctionalProcess
+from dataMovement import BusinessPatternDataMovement, BusinessDataMovement
 
 class BusinessProject(object):
     @staticmethod
@@ -50,7 +51,7 @@ class BusinessProject(object):
             return False
 
     @staticmethod
-    def delete_project(organization_id, project_id):
+    def delete(organization_id, project_id):
         """Delete a specific project <project_id>"""
         prj = Projects.query.filter(Projects.id == project_id).first()
 
@@ -69,13 +70,18 @@ class BusinessProject(object):
         specified in the pattern
         """
         fps = BusinessPatternFunctionalProcess.functionalprocesses(pattern_id)
+
+        if not fps:
+            return False
+
         for fp in fps:
             fp_poco = fp.to_poco_obj()
             new_fpId = BusinessFunctionalProcess.create(organization_id, project_id, fp_poco)
-            #dms = BusinessPatternDataMovement.get_datamovements(pattern_id, fp_ip)
-            #for dm in dms:
-            #Create dm to project (with rename)
-            #break
+            if new_fpId > 0:
+                dms = BusinessPatternDataMovement.datamovements(pattern_id, fp.id)
+                for dm in dms:
+                    dm_poco = dm.to_poco_obj()
+                    BusinessDataMovement.create(organization_id, project_id, new_fpId, dm_poco)
 
-        #all_fps = {'FunctionalProcesses-ApplyPattern' : [fp.to_json() for fp in fps]}
+
         return True
