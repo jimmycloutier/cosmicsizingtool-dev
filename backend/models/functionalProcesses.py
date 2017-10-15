@@ -1,3 +1,4 @@
+import types
 from models import db, basemodel
 from models.projects import Projects
 from models.patterns import Patterns
@@ -20,6 +21,7 @@ class FunctionalProcesses(basemodel.Base):
             'prj_ID' : self.project_id,
             'Prj' : self.project.projectName
         }
+
 
 class PatternFunctionalProcesses(basemodel.Base):
     __tablename__ = 'patternfunctionalprocesses'

@@ -1,13 +1,16 @@
+import types
 from flask import jsonify, request, abort, url_for
 from . import project
 from models.projects import  Projects
 from models import db
-from functionalProcess import functionprocess
+from functionalProcess import BusinessPatternFunctionalProcess, BusinessFunctionalProcess
+from dataMovement import BusinessPatternDataMovement
+
 
 #Test API route
 @project.route("/", methods=['GET'])
 def test_project_route():
-    return jsonify({'message': 'test'}), 201
+    return jsonify({'message': 'test project API'}), 201
 
 @project.route("/v1.0/projects", methods=['GET'])
 def get_all_projects():
@@ -78,6 +81,16 @@ def apply_pattern(organization_id, project_id, pattern_id):
     JSON request can contain a list of datamovement names that need to be used for the project instead of the one
     specified in the pattern
     """
-    testlien = url_for('functionalprocess.test_fp_route')
-    return jsonify({'message': testlien}), 201
+    fps = BusinessPatternFunctionalProcess.get_functionalprocesses(pattern_id)
+    for fp in fps:
+        fp_poco = fp.to_poco_obj()
+        BusinessFunctionalProcess.create_functionalprocesses(organization_id, project_id, fp_poco)
+        #Create Fp to project
+        #dms = BusinessPatternDataMovement.get_datamovements(pattern_id, fp_ip)
+        #for dm in dms:
+            #Create dm to project (with rename)
+            #break
+
+    all_fps = {'FunctionalProcesses-ApplyPattern' : [fp.to_json() for fp in fps]}
+    return jsonify(all_fps)
 
