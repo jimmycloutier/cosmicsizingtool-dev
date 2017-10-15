@@ -5,6 +5,11 @@ from .datamovement_utils import isValidMove
 class BusinessPatternDataMovement(object):
 
     @staticmethod
+    def all_db_datamovements():
+        """Get all datamovements from database """
+        return DataMovements.query.all()
+
+    @staticmethod
     def datamovements(pattern_id, fp_ip):
         return PatternDataMovements.query.filter(PatternDataMovements.fp_id == fp_ip).all()
 

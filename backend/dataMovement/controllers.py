@@ -1,8 +1,8 @@
 from flask import jsonify, request, abort
 from . import datamovement
-from models.dataMovements import  DataMovements, PatternDataMovements
-from models import db
 from .businessPatternDataMovement import BusinessPatternDataMovement
+from .businessDataMovement import BusinessDataMovement
+from utils import json2obj
 
 #test route
 @datamovement.route("/", methods=['GET'])
@@ -12,21 +12,21 @@ def test_dm_route():
 @datamovement.route("/v1.0/datamoves", methods=['GET'])
 def get_all_datamovements():
     """Get all datamovements from database """
-    dms = DataMovements.query.all()
+    dms = BusinessDataMovement.all_db_datamovements()
     all_dms = {'DataMovements' : [dm.to_json() for dm in dms]}
     return jsonify(all_dms)
 
 @datamovement.route("/v1.0/patterndatamoves", methods=['GET'])
 def get_all_patterndatamovements():
     """Get all datamovements related to a pattern from database"""
-    pdms = PatternDataMovements.query.all()
+    pdms = BusinessPatternDataMovement.all_db_datamovements()
     all_pdms = {'PatternDataMovements': [pdm.to_json() for pdm in pdms]}
     return jsonify(all_pdms)
 
 @datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocesses/<fp_ip>/datamoves", methods=['GET'])
 def get_datamovements(organization_id, project_id, fp_id):
     """Get all datamovements for a specific functional process <fp_id>"""
-    dms = DataMovements.query.filter(DataMovements.fp_id == fp_id).all()
+    dms = BusinessDataMovement.datamovements(organization_id, project_id, fp_id)
     all_dms = {'DataMovements' : [dm.to_json() for dm in dms]}
     return jsonify(all_dms)
 
@@ -43,17 +43,12 @@ def create_datamovements(organization_id, project_id, fp_id):
     if not request.json or not 'Name' in request.json or 'Move' in request.json :
         abort(400)
 
-    received_dm = request.get_json()
-    move = received_dm['Move'].upper()
-    if not datamove_func.isValidMove(move):
+    received_dm = json2obj(request.data)
+    success = BusinessDataMovement.create(organization_id, project_id, fp_id, received_dm)
+    if success:
+        return jsonify({'message': 'New Data movements created successfully', 'ID' : success}), 201
+    else:
         abort(400)
-
-    new_dm = DataMovements(dmName=received_dm['Name'], move=move, fp_id=fp_id)
-
-    db.session.add(new_dm)
-    db.session.commit()
-
-    return jsonify({'message': 'New Data movements created successfully'}), 201
 
 @datamovement.route("/v1.0/patterns/<pattern_id>/funcprocesses/<fp_ip>/datamoves", methods=['POST'])
 def create_patterndatamovements(pattern_id, fp_id):
@@ -61,30 +56,23 @@ def create_patterndatamovements(pattern_id, fp_id):
     if not request.json or not 'Name' in request.json or 'Move' in request.json :
         abort(400)
 
-    received_dm = request.get_json()
-    move = received_dm['Move']
-    move = move.upper()
-    if not datamove_func.isValidMove(move):
-        abort(400)
-
-    received_dm = request.get_json()
-    new_dm = PatternDataMovements(dmName=received_dm['Name'], move=move, fp_id=fp_id)
-
-    db.session.add(new_dm)
-    db.session.commit()
-
-    return jsonify({'message': 'New Data movements created successfully'}), 201
+    received_dm = json2obj(request.data)
+    success = BusinessPatternDataMovement.create(pattern_id,fp_id, received_dm)
+    if success:
+        return jsonify({'message': 'New Data movements created successfully', 'ID' : success}), 201
+    else:
+        abort(404)
 
 @datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocesses/<fp_id>/datamoves/<dm_id>", methods=['GET'])
 def get_this_datamovement(organization_id, project_id, fp_id, dm_id):
     """Get a specific datamovement <dm_id>"""
-    dm = DataMovements.query.filter(DataMovements.id == dm_id).first()
+    dm = BusinessDataMovement.datamovement(organization_id, project_id, fp_id, dm_id)
     return jsonify({'DateMovements': [dm.to_json()]} if dm else {'message': 'Data Movements not found'}), 404
 
 @datamovement.route("/v1.0/pattern/<pattern_id>/funcprocesses/<fp_id>/datamoves/<dm_id>", methods=['GET'])
 def get_this_patterndatamovement(pattern_id, fp_id, dm_id):
     """Get a specific datamovement (related to a pattern) <dm_id>"""
-    dm = PatternDataMovements.query.filter(PatternDataMovements.id == dm_id).first()
+    dm = BusinessPatternDataMovement.datamovement(pattern_id,fp_id, dm_id)
     return jsonify({'DataMovements': [dm.to_json()]} if dm else {'message': 'Data Movement not found'}), 404
 
 @datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocesses/<fp_id>/datamoves/<dm_id>", methods=['PUT'])
@@ -92,23 +80,12 @@ def update_datamovement(organization_id, project_id, fp_id, dm_id):
     """Update a specific datamovement <dm_id>"""
     if not request.json:
         abort(400)
-
-    dm = DataMovements.query.filter(DataMovements.id == dm_id).first()
-
-    if dm:
-        dm.dmName = request.json.get('Name', dm.dmName)
-
-        move = request.json.get('Move', dm.movement)
-        if move:
-            move = move.upper()
-            if not datamove_func.isValidMove(move):
-                abort(400)
-            else:
-                dm.movement = request.json.get('Move', dm.movement)
-
-        db.session.commit()
-
-    return jsonify({'DataMovements': [dm.to_json()]} if dm else {'message': 'Data Movement not found'}), 404
+    received_dm = json2obj(request.data)
+    success = BusinessDataMovement.update(organization_id,project_id, fp_id, dm_id, received_dm)
+    if success:
+        return jsonify({'message': 'Data Movement updated successfully'}), 202
+    else:
+        abort(404)
 
 @datamovement.route("/v1.0/patterns/<pattern_id>/funcprocesses/<fp_id>/datamoves/<dm_id>", methods=['PUT'])
 def update_patterndatamovement(pattern_id, fp_id, dm_id):
@@ -116,47 +93,33 @@ def update_patterndatamovement(pattern_id, fp_id, dm_id):
     if not request.json:
         abort(400)
 
-    dm = PatternDataMovements.query.filter(PatternDataMovements.id == dm_id).first()
+    received_dm = json2obj(request.data)
+    success = BusinessPatternDataMovement.update(pattern_id, fp_id, dm_id, received_dm)
 
-    if dm:
-        dm.dmName = request.json.get('Name', dm.dmName)
-
-        move = request.json.get('Move', dm.movement)
-        if move:
-            move = move.upper()
-            if not datamove_func.isValidMove(move):
-                abort(400)
-            else:
-                dm.movement = request.json.get('Move', dm.movement)
-
-        db.session.commit()
-
-    return jsonify({'DataMovements': [dm.to_json()]} if dm else {'message': 'Data Movement not found'}), 404
+    if success:
+        return jsonify({'message': 'Data Movement updated successfully'}), 202
+    else:
+        abort(404)
 
 
 @datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocesses/<fp_id>/datamoves/<dm_id>", methods=['DELETE'])
 def delete_datamovement(organization_id, project_id, fp_id, dm_id):
     """Delete a specific data movement <dm_id>"""
-    dm = DataMovements.query.filter(DataMovements.id == dm_id).first()
+    success = BusinessDataMovement.delete(organization_id,project_id,fp_id,dm_id)
 
-    if dm:
-        db.session.delete(dm)
-        db.session.commit()
-        return jsonify({'message':'Data Movement deleted successfully'})
+    if success:
+        return jsonify({'message':'Data Movement deleted successfully'}), 200
     else:
-        return jsonify({'message':'Data Movement not found'}), 400
+        abort(404)
 
 @datamovement.route("/v1.0/patterns/<pattern_id>/funcprocesses/<fp_id>/datamoves/<dm_id>", methods=['DELETE'])
 def delete_patterndatamovement(project_id, fp_id, dm_id):
     """Delete a specific data movement (related to a pattern) <dm_id>"""
-    dm = PatternDataMovements.query.filter(PatternDataMovements.id == dm_id).first()
+    success = BusinessPatternDataMovement.delete(project_id,fp_id,dm_id)
 
-    if dm:
-        db.session.delete(dm)
-        db.session.commit()
-        return jsonify({'message':'Data Movement deleted successfully'})
+    if success:
+        return jsonify({'message':'Data Movement deleted successfully'}), 200
     else:
-        return jsonify({'message':'Data Movement not found'}), 400
-
+        abort(404)
 
 

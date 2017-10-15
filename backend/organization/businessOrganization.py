@@ -3,10 +3,11 @@ from models import db
 
 class BusinessOrganization(object):
     @staticmethod
-    def all_db_organizations():
+    def organizations():
         """Get all organizations from database"""
         orgs = Organizations.query.all()
         return orgs
+
     @staticmethod
     def create(received_organization):
         """Create a new organization"""
