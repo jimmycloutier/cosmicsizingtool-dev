@@ -35,7 +35,7 @@ def get_functionalprocesses(organization_id, project_id):
 @functionprocess.route("/v1.0/patterns/<pattern_id>/funcprocesses", methods=['GET'])
 def get_patternfunctionalprocesses(pattern_id):
     """Get all functional processes related to a specific pattern <pattern_id>"""
-    fps = BusinessPatternFunctionalProcess.get_functionalprocesses(pattern_id)
+    fps = BusinessPatternFunctionalProcess.functionalprocesses(pattern_id)
     all_fps = {'FunctionalProcesses' : [fp.to_json() for fp in fps]}
     return jsonify(all_fps)
 
@@ -46,7 +46,7 @@ def create_functionalprocesses(organization_id, project_id):
         abort(400)
 
     x = json2obj(request.data)
-    new_id =BusinessFunctionalProcess.create_functionalprocesses(organization_id,project_id, x)
+    new_id =BusinessFunctionalProcess.create(organization_id, project_id, x)
 
     return jsonify({'message': 'New Functional Process created successfully.', 'ID': new_id}), 201
 

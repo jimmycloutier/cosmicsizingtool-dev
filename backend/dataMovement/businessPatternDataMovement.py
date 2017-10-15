@@ -1,24 +1,8 @@
 from models.dataMovements import  PatternDataMovements
 from models import db
+from .datamovement_utils import isValidMove
 
 class BusinessPatternDataMovement(object):
-    #Valid movement. Only EWRX are valid and only once.
-    @staticmethod
-    def isValidMove(movement):
-        isValid = False
-        validMove = ['E', 'W', 'R', 'X']
-
-        if len(movement) <= 4:
-            for move in movement:
-                if move in validMove:
-                    isValid = True
-                    validMove.remove(move)
-                else:
-                    isValid = False
-                    break
-
-        return isValid
-
 
     @staticmethod
     def datamovements(pattern_id, fp_ip):
@@ -32,7 +16,7 @@ class BusinessPatternDataMovement(object):
 
         move = received_dm.Move
         move = move.upper()
-        if  not BusinessPatternDataMovement.isValidMove(move):
+        if  not isValidMove(move):
             return
 
         new_dm = PatternDataMovements(dmName=received_dm.Name, move=move, fp_id=fp_id)
@@ -63,7 +47,7 @@ class BusinessPatternDataMovement(object):
             move = getattr(received_dm, 'Move', dm.movement)
             if move:
                 move = move.upper()
-                if BusinessPatternDataMovement.isValidMove(move):
+                if isValidMove(move):
                     dm.movement = move
 
             db.session.commit()

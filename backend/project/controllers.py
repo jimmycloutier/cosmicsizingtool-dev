@@ -81,10 +81,10 @@ def apply_pattern(organization_id, project_id, pattern_id):
     JSON request can contain a list of datamovement names that need to be used for the project instead of the one
     specified in the pattern
     """
-    fps = BusinessPatternFunctionalProcess.get_functionalprocesses(pattern_id)
+    fps = BusinessPatternFunctionalProcess.functionalprocesses(pattern_id)
     for fp in fps:
         fp_poco = fp.to_poco_obj()
-        new_fpId = BusinessFunctionalProcess.create_functionalprocesses(organization_id, project_id, fp_poco)
+        new_fpId = BusinessFunctionalProcess.create(organization_id, project_id, fp_poco)
         #dms = BusinessPatternDataMovement.get_datamovements(pattern_id, fp_ip)
         #for dm in dms:
             #Create dm to project (with rename)
