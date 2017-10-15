@@ -2,7 +2,7 @@ from flask import jsonify, request, abort
 from . import datamovement
 from models.dataMovements import  DataMovements, PatternDataMovements
 from models import db
-from . import datamove_func
+from .businessPatternDataMovement import BusinessPatternDataMovement
 
 #test route
 @datamovement.route("/", methods=['GET'])
@@ -33,7 +33,7 @@ def get_datamovements(organization_id, project_id, fp_id):
 @datamovement.route("/v1.0/patterns/<pattern_id>/funcprocesses/<fp_ip>/datamoves", methods=['GET'])
 def get_patterndatamovements(pattern_id, fp_ip):
     """Get all datamovements for a specific functional process (related to a pattern) <fp_id>"""
-    dms = PatternDataMovements.query.filter(PatternDataMovements.fp_id == fp_ip).all()
+    dms = BusinessPatternDataMovement.datamovements(pattern_id, fp_ip)
     all_dms = {'DataMovements' : [dm.to_json() for dm in dms]}
     return jsonify(all_dms)
 
