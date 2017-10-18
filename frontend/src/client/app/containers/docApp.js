@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { giveOrganization } from '../actions/organizationAction';
 import Organization from '../components/organization'
 import Projects from '../components/projects'
-import CSSModules from 'react-css-modules';
-require('!style!css!../../../../node_modules/bootstrap/dist/css/bootstrap.min.css');
-require('!style!css!less!../../../../style/styles-less.less');
+//import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+//import '../../../../style/styles.less';
+//import './style/styles.less';
 
 class docApp extends Component {
 
@@ -49,5 +49,20 @@ docApp.propTypes = {
     dispatch: PropTypes.func.isRequired
 }
 
+//Mapping des variables et du store
+/*
+function mapStateToProps(state) {
+    const { uiState, projectList,organizationList } = state;
+    const {
+        idOrgCurrent: PropTypes.number.isRequired,
+        idPrjCurrent: PropTypes.number.isRequired
+
+    } = uiState || {idOrgCurrent:-1, idPrjCurrent:-1};
+
+    return {
+        idOrgCurrent,
+        idPrjCurrent
+    }
+}*/
 
 export default connect(null)(docApp)
