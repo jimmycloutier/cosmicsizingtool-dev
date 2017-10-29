@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux';
 import {selectPrj } from '../actions/projectAction';
+import {displayFPDMGrid} from '../actions/functionalProcessesDataMovementsAction'
 
 class Projects extends Component {
 
@@ -20,6 +21,8 @@ class Projects extends Component {
     componentWillReceiveProps(nextProps){
         if (nextProps.idPrjCurrent !== this.props.idPrjCurrent && nextProps.idPrjCurrent!=-1) {
             const { dispatch, idPrjCurrent } = nextProps;
+            dispatch(displayFPDMGrid(nextProps.idPrjCurrent));
+
         }
     }
 
@@ -29,7 +32,7 @@ class Projects extends Component {
 
         <div>
             <div className =  "row">
-                Add Project
+                Project
             </div>
           {projects.map((project) => {
                   return (<div className = {idPrjCurrent === project.ID ? "selected row project" : "row project"} key={project.ID} data-idPrj={project.ID} onClick={this.handlePrjChange} >

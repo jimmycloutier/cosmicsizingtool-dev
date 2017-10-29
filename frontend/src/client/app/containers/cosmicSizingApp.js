@@ -3,11 +3,14 @@ import { connect } from 'react-redux';
 import { giveOrganization } from '../actions/organizationAction';
 import Organization from '../components/organization'
 import Projects from '../components/projects'
+import FunctionalProcessesDataMovements from '../components/functionalProcessesDataMovements'
+import HelloWorldComponentWithValue from '../components/simple'
+
 //import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-//import '../../../../style/styles.less';
+//import '../../../../style/styles-less.less';
 //import './style/styles.less';
 
-class docApp extends Component {
+class cosmicSizingApp extends Component {
 
     constructor(props) {
         super(props);
@@ -32,10 +35,9 @@ class docApp extends Component {
             <div className="col-xs-2" id="projects">
                 <Projects/>
             </div>
-            <div className="col-xs-3" >
+            <div className="col-xs-8" id ="functionalProcessesDataMovements">
+                <FunctionalProcessesDataMovements/>
 
-            </div>
-            <div className="col-xs-5">
             </div>
 
         </div>
@@ -45,7 +47,7 @@ class docApp extends Component {
     }
 }
 
-docApp.propTypes = {
+cosmicSizingApp.propTypes = {
     dispatch: PropTypes.func.isRequired
 }
 
@@ -65,4 +67,4 @@ function mapStateToProps(state) {
     }
 }*/
 
-export default connect(null)(docApp)
+export default connect(null)(cosmicSizingApp)

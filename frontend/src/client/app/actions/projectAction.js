@@ -34,7 +34,6 @@ function getProjects(idOrg) {
         return fetch(`http://127.0.0.1:5000/prj/v1.0/organizations/${idOrg}/projects`)
             .then(response => response.json())
             .then(json => {
-                console.log(json)
                 dispatch(receiptProjectList(idOrg, json.Projects));
                 if(getState().uiState.idPrjCurrent==-1){
                     let idPrj = json.Projects[0].ID;

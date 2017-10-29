@@ -34,9 +34,9 @@ def create_project(organization_id):
     """Create a project related to an organization <organization_id>"""
     if not request.json or not 'Name' in request.json:
         abort(400)
-
+    print(request.json)
     received_project = json2obj(request.data)
-    success = BusinessProject.create(received_project)
+    success = BusinessProject.create(organization_id, received_project)
 
     if success:
         return jsonify({'message':'New Project created successfully.', 'ID' : success }), 201
@@ -50,7 +50,7 @@ def update_project(organization_id, project_id):
         abort(400)
 
     received_project = json2obj(request.data)
-    success = BusinessProject.update(received_project)
+    success = BusinessProject.update(organization_id, project_id,received_project)
 
     if success:
         return jsonify({'message':'Project updated successfully.'}), 202

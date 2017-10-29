@@ -1,5 +1,5 @@
 {
-  "name": "front-end",
+  "name": "Cosmic-Sizing-Tool-FrontEnd",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -34,6 +34,7 @@
     "immutable": "^3.8.1",
     "intl": "^1.2.2",
     "jquery": "^2.2.1",
+    "jqwidgets-framework": "^5.4.0",
     "prop-types": "^15.6.0",
     "react": "^15.6.1",
     "react-addons-shallow-compare": "^15.6.0",

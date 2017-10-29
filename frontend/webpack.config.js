@@ -6,6 +6,7 @@ var TARGET = process.env.npm_lifecycle_event;
 
 var BUILD_DIR = path.resolve(__dirname, 'src/client/public');
 var APP_DIR = path.resolve(__dirname, 'src/client/app');
+var JQWIDGET_DIR = path.resolve(__dirname, 'node_modules/jqwidgets-framework/jqwidgets-react')
 var STYLE_PATH = path.resolve(__dirname, 'style');
 // Répertoire où se situent les fichiers .js d'où sont tirées les données de
 // localisation.
@@ -98,11 +99,17 @@ function common(environnement) {
         module: {
             rules: [
                 {
-                    test: /\.jsx?/,
+                    test: /\.(js|jsx)$/,
                     include: APP_DIR,
                     use: donneLoaderJS(environnement),
                     exclude: [/node_modules/]
-                }, {
+                },
+                {
+                    test: /\.(js|jsx)$/,
+                    include: JQWIDGET_DIR,
+                    use: donneLoaderJS(environnement),
+                },
+                {
                     test: /\.css$/,
                     include: STYLE_PATH,
                     use: ExtractTextPlugin.extract({
@@ -118,16 +125,20 @@ function common(environnement) {
                         use: ["css-loader", "less-loader"]
                     }),
                     exclude: [/node_modules/]
-                }, {
+                },
+                {
                     test: /\.json$/,
                     use: ['json-loader']
-                }, {
+                },
+                {
                     test: /\.txt$/,
                     use: ['raw-loader']
-                }, {
+                },
+                {
                     test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
                     use: [{loader: "url-loader", options: {limit: 10000}}]
-                }, {
+                },
+                {
                     test: /\.(eot|ttf)$/,
                     use: ['file-loader']
                 }]

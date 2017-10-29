@@ -29,7 +29,7 @@ class Organization extends Component {
         return (
             <div>
                 <div className =  "row">
-                    Add Organization
+                    Organization
                 </div>
           {organizations.map(organization =>
               <div className = {idOrgCurrent===organization.ID ? "selected row organization" : "row organization"} data-idOrg={organization.ID} key={organization.ID} onClick={this.handleOrgChange}>
