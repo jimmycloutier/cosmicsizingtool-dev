@@ -21,7 +21,7 @@ class Projects extends Component {
     componentWillReceiveProps(nextProps){
         if (nextProps.idPrjCurrent !== this.props.idPrjCurrent && nextProps.idPrjCurrent!=-1) {
             const { dispatch, idPrjCurrent } = nextProps;
-            dispatch(displayFPDMGrid(nextProps.idPrjCurrent));
+            dispatch(displayFPDMGrid(nextProps.idOrgCurrent, nextProps.idPrjCurrent));
 
         }
     }

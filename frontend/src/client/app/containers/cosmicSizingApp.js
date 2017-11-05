@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { giveOrganization } from '../actions/organizationAction';
 import Organization from '../components/organization'
 import Projects from '../components/projects'
-import FunctionalProcessesDataMovements from '../components/functionalProcessesDataMovements'
-import HelloWorldComponentWithValue from '../components/simple'
+import FunctionalProcessesDataMovements from './functionalProcessesDataMovementsFrame'
 
 //import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 //import '../../../../style/styles-less.less';

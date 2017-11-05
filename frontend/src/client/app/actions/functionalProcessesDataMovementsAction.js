@@ -1,17 +1,15 @@
-import fetch from 'isomorphic-fetch'
 
 var C = require('../constants')
 
-function askShowFPDM(idPrj) {
+function askShowFPDM(idOrg, idPrj) {
     return {
-        type: C.SHOW_FUNCTPROCESSESDATAMOVES_GRID,
-        idPrjCurrentToDisplay: idPrj
+        type: C.SHOW_FUNCTPROCESSESDATAMOVES_GRID
     }
 }
 
-export function displayFPDMGrid(idPrj) {
+export function displayFPDMGrid(idOrg, idPrj) {
         return (dispatch,getState) => {
-            dispatch(askShowFPDM(idPrj))
+            dispatch(askShowFPDM(idOrg, idPrj))
         }
 }
 
