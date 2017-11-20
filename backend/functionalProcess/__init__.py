@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-functionprocess= Blueprint('functionalprocess', __name__, url_prefix='/fp')
+functionprocess= Blueprint('functionalprocess', __name__)
 
 from . import controllers
 from .businessPatternFunctionalProcess import BusinessPatternFunctionalProcess

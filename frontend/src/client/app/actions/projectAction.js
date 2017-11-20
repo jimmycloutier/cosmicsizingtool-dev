@@ -31,7 +31,7 @@ function receiptProjectList(idOrg,prjList) {
 function getProjects(idOrg) {
     return (dispatch,getState) => {
         dispatch(askProject(idOrg))
-        return fetch(`http://127.0.0.1:5000/prj/v1.0/organizations/${idOrg}/projects`)
+        return fetch(`http://127.0.0.1:5000/v1.0/organizations/${idOrg}/projects`)
             .then(response => response.json())
             .then(json => {
                 dispatch(receiptProjectList(idOrg, json.Projects));

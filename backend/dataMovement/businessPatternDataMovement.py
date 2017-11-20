@@ -14,6 +14,12 @@ class BusinessPatternDataMovement(object):
         return PatternDataMovements.query.filter(PatternDataMovements.fp_id == fp_ip).all()
 
     @staticmethod
+    def datamovements_specific_pattern(pattern_id):
+        """Get all datamovements for a specific pattern<pattern_id>"""
+        dms = PatternDataMovements.query.filter(PatternDataMovements.patternfuncprocess.has(pattern_id = pattern_id)).all()
+        return dms
+
+    @staticmethod
     def create(pattern_id, fp_id, received_dm):
         """Create new datamovement for a specific functional process (realted to a pattern) <fp_id>"""
         if not received_dm:

@@ -22,7 +22,7 @@ function receiptOrganization(json) {
 function getOrganizations() {
     return (dispatch,getState) => {
         dispatch(askOrganization())
-        return fetch(`http://127.0.0.1:5000/org/v1.0/organizations`)
+        return fetch(`http://127.0.0.1:5000/v1.0/organizations`)
             .then(response => response.json())
             .then(json => {
                 dispatch(receiptOrganization(json.Organizations));

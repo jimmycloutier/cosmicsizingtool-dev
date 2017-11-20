@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-organization= Blueprint('organization', __name__, url_prefix='/org')
+organization= Blueprint('organization', __name__)
 
 from . import controllers
 from .businessOrganization import BusinessOrganization

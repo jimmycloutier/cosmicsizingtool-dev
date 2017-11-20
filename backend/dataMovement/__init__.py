@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-datamovement= Blueprint('datamovement', __name__, url_prefix='/dm')
+datamovement= Blueprint('datamovement', __name__)
 
 from . import controllers
 from .businessPatternDataMovement import BusinessPatternDataMovement

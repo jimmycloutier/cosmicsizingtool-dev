@@ -9,6 +9,7 @@ class FuncProcesesDataMovesGrid extends React.Component {
     constructor() {
         super();
 
+        //Source for Functional Process
         let source =
             {
                 datatype: 'json',
@@ -24,7 +25,8 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     // call commit with parameter true if the synchronization with the server is successful
                     //and with parameter false if the synchronization failed.
                     // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
-                    fetch("http://127.0.0.1:5000/prj/v1.0/organizations/1/projects", {
+                    fetch("http://127.0.0.1:5000/v1.0/organizations/" + this.props.idOrgCurrent + "/projects/" + this.props.idPrjCurrent + "/funcprocesses", {
+
                         method: "POST",
                         headers: {
                             'Accept': 'application/json',
@@ -47,18 +49,19 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     // synchronize with the server - send delete command
                     // call commit with parameter true if the synchronization with the server is successful
                     //and with parameter false if the synchronization failed.
-                    console.log('Delete Row');
+                    console.log('Delete Row : ' + rowid);
                     commit(true);
                 },
                 updaterow: (rowid, newdata, commit) => {
                     // synchronize with the server - send update command
                     // call commit with parameter true if the synchronization with the server is successful
                     // and with parameter false if the synchronization failed.
-                    console.log('Update Row');
+                    console.log('Update Row : ' + rowid);
                     commit(true);
                 }
             };
 
+        //Source for DataGroup
         let sourceDG =
             {
                 datatype: 'json',
@@ -75,7 +78,7 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     // call commit with parameter true if the synchronization with the server is successful
                     //and with parameter false if the synchronization failed.
                     // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
-                    console.log('Add row');
+                    console.log('Add row : ' + rowid + ' Pos:' + position);
                     commit(true);
                 },
                 deleterow: (rowid, commit) => {
@@ -89,7 +92,7 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     // synchronize with the server - send update command
                     // call commit with parameter true if the synchronization with the server is successful
                     // and with parameter false if the synchronization failed.
-                    console.log('Update Row');
+                    console.log('Update Row :' + rowid);
                     commit(true);
                 }
             };
@@ -102,8 +105,7 @@ class FuncProcesesDataMovesGrid extends React.Component {
 
     refreshView(idOrg, idProj){
         let temp = this.state.source;
-        let tempDG = this.state.sourceDG;
-        temp.url = 'http://127.0.0.1:5000/fp/v1.0/organizations/' + idOrg+ '/projects/' + idProj + '/funcprocesses';
+        temp.url = 'http://127.0.0.1:5000/v1.0/organizations/' + idOrg+ '/projects/' + idProj + '/funcprocesses';
         this.setState({
             source: temp
         });
@@ -124,6 +126,26 @@ class FuncProcesesDataMovesGrid extends React.Component {
         });
         this.refs.clearBtn.on('click', () => {
             this.refs.myGrid.clear();
+
+        });
+        this.refs.addBtn.on('click', () => {
+            let datarow = {
+                Name: ""
+            };
+            this.refs.myGrid.addrow(null, datarow);
+        });
+        this.refs.multiAddBtn.on('click', () => {
+            this.refs.myGrid.beginupdate();
+            for (let i = 0; i < 10; i++) {
+                let datarow = {
+                    Name: ""
+                };
+                this.refs.myGrid.addrow(null, datarow);
+            }
+            this.refs.myGrid.endupdate();
+        });
+        this.refs.delBtn.on('click', () => {
+            this.refreshView(this.props.idOrgCurrent, this.props.idPrjCurrent)
         });
     }
 
@@ -131,7 +153,6 @@ class FuncProcesesDataMovesGrid extends React.Component {
 
           let dataAdapter = new $.jqx.dataAdapter(this.state.source, { autoBind: true });
           let dataAdapterDG = new $.jqx.dataAdapter(this.state.sourceDG, { autoBind: true });
-          let datamoves = dataAdapterDG.records;
 
           let rendertoolbar = (toolbar) => {
               let container = document.createElement('div');
@@ -164,35 +185,15 @@ class FuncProcesesDataMovesGrid extends React.Component {
               let grid = $($(parentElement).children()[0]);
               nestedGrids[index] = grid;
 
-              /*
-              let filtergroup = new $.jqx.filter();
-              let filter_or_operator = 1;
-              let filtervalue = id;
-              let filtercondition = 'equal';
-              let filter = filtergroup.createfilter('stringfilter', filtervalue, filtercondition);
-              let ordersbyid = [];
-              for (let m = 0; m < orders.length; m++) {
-                  let result = filter.evaluate(orders[m]['EmployeeID']);
-                  if (result)
-                      ordersbyid.push(orders[m]);
-              }
-              let orderssource = {
-                  datafields: [
-                      { name: 'EmployeeID', type: 'string' },
-                      { name: 'ShipName', type: 'string' },
-                      { name: 'ShipAddress', type: 'string' },
-                      { name: 'ShipCity', type: 'string' },
-                      { name: 'ShipCountry', type: 'string' },
-                      { name: 'ShippedDate', type: 'date' }
-                  ],
-                  id: 'OrderID',
-                  localdata: ordersbyid
-              }*/
+              let sourceTemp = this.state.sourceDG;
+              sourceTemp.url =this.state.source.url + '/' + id + '/datamoves';
 
-              let nestedGridAdapter = dataAdapterDG;
+              let nestedGridAdapter = new $.jqx.dataAdapter(sourceTemp);
+
               if (grid != null) {
                   grid.jqxGrid({
-                      source: nestedGridAdapter, width: 780, height: 200,
+                      source: nestedGridAdapter, width: 780, height: 200, editable: true,editmode: 'selectedcell',
+                      selectionmode: 'singlecell',
                       columns: [
                           { text: 'DG Name', datafield: 'Name', width: 200 },
                           { text: 'DG Move', datafield: 'Move', width: 200 }
@@ -209,9 +210,16 @@ class FuncProcesesDataMovesGrid extends React.Component {
 
           return (
               <div>
+                  <div style={{ marginTop: 10 }}>
+                      <JqxButton ref='addBtn' value='Add Row' style={{ float: 'left' }}/>
+                      <JqxButton ref='multiAddBtn' value='Add 10 Rows' style={{ float: 'left' }}/>
+                      <JqxButton ref='delBtn' value='Delete Row' style={{ float: 'left' }}/>
+                  </div>
               <JqxGrid ref='myGrid'
                 width={850} source={dataAdapter} columns={columns}
-                editable={true} rendertoolbar={rendertoolbar} showtoolbar={true} rowdetails={true} initrowdetails={initrowdetails} rowdetailstemplate={rowdetailstemplate} rowsheight={35}
+                editable={true} showtoolbar={false} rowdetails={true} initrowdetails={initrowdetails}
+                rowdetailstemplate={rowdetailstemplate} rowsheight={35} editmode={'selectedcell'} selectionmode={'singlecell'}
+                  enabletooltips={true} showeverpresentrow={true} everpresentrowposition={'bottom'}
                 />
                 <div style={{ marginTop: 10 }}>
                     <JqxButton ref='refreshBtn' value='Refresh Data' style={{ float: 'left' }}/>
@@ -222,18 +230,5 @@ class FuncProcesesDataMovesGrid extends React.Component {
           )
       }
 }
-
-
-
-//import React, { Component, PropTypes } from 'react';
-//import { connect } from 'react-redux';
-
-//class FuncProcessesDataMovesGrid extends React.Component {
-  //  render() {
-  //      return <h1>Dans le simple</h1>;
-  //  }
-//}
-
-
 
 export default connect(null)(FuncProcesesDataMovesGrid)

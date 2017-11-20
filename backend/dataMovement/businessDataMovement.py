@@ -16,6 +16,12 @@ class BusinessDataMovement(object):
         return dms
 
     @staticmethod
+    def datamovements_specific_project(organization_id, project_id):
+        """Get all datamovements for a specific project <project_id>"""
+        dms = DataMovements.query.filter(DataMovements.funcprocess.has(project_id = project_id)).all()
+        return  dms
+
+    @staticmethod
     def create(organization_id, project_id, fp_id, received_dm):
         """Create new datamovement for a specific functional process <fp_id>"""
         if not received_dm:

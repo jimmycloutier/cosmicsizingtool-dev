@@ -23,21 +23,44 @@ def get_all_patterndatamovements():
     all_pdms = {'PatternDataMovements': [pdm.to_json() for pdm in pdms]}
     return jsonify(all_pdms)
 
-@datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocesses/<fp_ip>/datamoves", methods=['GET'])
+
+
+
+
+
+@datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/datamoves", methods=['GET'])
+def get_datamovements_specific_project(organization_id, project_id):
+    """Get all datamovements for a specific project <project_id>"""
+    dms = BusinessDataMovement.datamovements_specific_project(organization_id, project_id)
+    all_dms = {'DataMovements' : [dm.to_json() for dm in dms]}
+    return jsonify(all_dms)
+
+@datamovement.route("/v1.0/patterns/<pattern_id>/datamoves", methods=['GET'])
+def get_patterndatamovements_specific_pattern(pattern_id):
+    """Get all datamovements for a specific patterns <pattern_id>"""
+    dms = BusinessPatternDataMovement.datamovements_specific_pattern(pattern_id)
+    all_dms = {'DataMovements' : [dm.to_json() for dm in dms]}
+    return jsonify(all_dms)
+
+
+
+
+
+@datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocesses/<fp_id>/datamoves", methods=['GET'])
 def get_datamovements(organization_id, project_id, fp_id):
     """Get all datamovements for a specific functional process <fp_id>"""
     dms = BusinessDataMovement.datamovements(organization_id, project_id, fp_id)
     all_dms = {'DataMovements' : [dm.to_json() for dm in dms]}
     return jsonify(all_dms)
 
-@datamovement.route("/v1.0/patterns/<pattern_id>/funcprocesses/<fp_ip>/datamoves", methods=['GET'])
-def get_patterndatamovements(pattern_id, fp_ip):
+@datamovement.route("/v1.0/patterns/<pattern_id>/funcprocesses/<fp_id>/datamoves", methods=['GET'])
+def get_patterndatamovements(pattern_id, fp_id):
     """Get all datamovements for a specific functional process (related to a pattern) <fp_id>"""
-    dms = BusinessPatternDataMovement.datamovements(pattern_id, fp_ip)
+    dms = BusinessPatternDataMovement.datamovements(pattern_id, fp_id)
     all_dms = {'DataMovements' : [dm.to_json() for dm in dms]}
     return jsonify(all_dms)
 
-@datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocsses/<fp_ip>/datamoves", methods=['POST'])
+@datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocsses/<fp_id>/datamoves", methods=['POST'])
 def create_datamovements(organization_id, project_id, fp_id):
     """Create new datamovement for a specific functional process <fp_id>"""
     if not request.json or not 'Name' in request.json or 'Move' in request.json :
@@ -50,7 +73,7 @@ def create_datamovements(organization_id, project_id, fp_id):
     else:
         abort(400)
 
-@datamovement.route("/v1.0/patterns/<pattern_id>/funcprocesses/<fp_ip>/datamoves", methods=['POST'])
+@datamovement.route("/v1.0/patterns/<pattern_id>/funcprocesses/<fp_id>/datamoves", methods=['POST'])
 def create_patterndatamovements(pattern_id, fp_id):
     """Create new datamovement for a specific functional process (realted to a pattern) <fp_id>"""
     if not request.json or not 'Name' in request.json or 'Move' in request.json :
