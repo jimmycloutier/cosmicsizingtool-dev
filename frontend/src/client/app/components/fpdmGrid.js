@@ -38,26 +38,49 @@ class FuncProcesesDataMovesGrid extends React.Component {
                             Name: rowdata.Name
                         })
                     })
-                        .then( (response) => {
+                        .then(function(res){ return res.json(); })
+                        .then( (data) => {
                             //do something awesome that makes the world a better place
-                            commit(true);
+                            //alert( JSON.stringify( data ));
+                            //alert(data.ID)
+                            commit(true, data.ID);
                         });
 
 
                 },
                 deleterow: (rowid, commit) => {
-                    // synchronize with the server - send delete command
-                    // call commit with parameter true if the synchronization with the server is successful
-                    //and with parameter false if the synchronization failed.
                     console.log('Delete Row : ' + rowid);
-                    commit(true);
+                    fetch("http://127.0.0.1:5000/v1.0/organizations/" + this.props.idOrgCurrent + "/projects/" + this.props.idPrjCurrent + "/funcprocesses/" + rowid, {
+
+                        method: "DELETE"
+                    })
+                        .then( (response) => {
+                            //do something awesome that makes the world a better place
+                            commit(true);
+                        });
                 },
                 updaterow: (rowid, newdata, commit) => {
                     // synchronize with the server - send update command
                     // call commit with parameter true if the synchronization with the server is successful
                     // and with parameter false if the synchronization failed.
                     console.log('Update Row : ' + rowid);
-                    commit(true);
+                    fetch("http://127.0.0.1:5000/v1.0/organizations/" + this.props.idOrgCurrent + "/projects/" + this.props.idPrjCurrent + "/funcprocesses/" + rowid, {
+
+                        method: "PUT",
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+
+                        //make sure to serialize your JSON body
+                        body: JSON.stringify({
+                            Name: newdata.Name
+                        })
+                    })
+                        .then( (response) => {
+                            //do something awesome that makes the world a better place
+                            commit(true);
+                        });
                 }
             };
 
@@ -85,7 +108,7 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     // synchronize with the server - send delete command
                     // call commit with parameter true if the synchronization with the server is successful
                     //and with parameter false if the synchronization failed.
-                    console.log('Delete Row');
+                    console.log('Delete Row : ' + rowid);
                     commit(true);
                 },
                 updaterow: (rowid, newdata, commit) => {
@@ -145,7 +168,13 @@ class FuncProcesesDataMovesGrid extends React.Component {
             this.refs.myGrid.endupdate();
         });
         this.refs.delBtn.on('click', () => {
-            this.refreshView(this.props.idOrgCurrent, this.props.idPrjCurrent)
+            let selectedcell = this.refs.myGrid.getselectedcell();
+            let selectedrowindex = selectedcell.rowindex;
+            let rowscount = this.refs.myGrid.getdatainformation().rowscount;
+            if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
+                let id = this.refs.myGrid.getrowid(selectedrowindex);
+                this.refs.myGrid.deleterow(id);
+            };
         });
     }
 
@@ -216,10 +245,9 @@ class FuncProcesesDataMovesGrid extends React.Component {
                       <JqxButton ref='delBtn' value='Delete Row' style={{ float: 'left' }}/>
                   </div>
               <JqxGrid ref='myGrid'
-                width={850} source={dataAdapter} columns={columns}
+                width={'100%'} source={dataAdapter} columns={columns}
                 editable={true} showtoolbar={false} rowdetails={true} initrowdetails={initrowdetails}
                 rowdetailstemplate={rowdetailstemplate} rowsheight={35} editmode={'selectedcell'} selectionmode={'singlecell'}
-                  enabletooltips={true} showeverpresentrow={true} everpresentrowposition={'bottom'}
                 />
                 <div style={{ marginTop: 10 }}>
                     <JqxButton ref='refreshBtn' value='Refresh Data' style={{ float: 'left' }}/>
