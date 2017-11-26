@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import JqxGrid from 'jqwidgets-framework/jqwidgets-react/react_jqxgrid';
 import JqxButton from 'jqwidgets-framework/jqwidgets-react/react_jqxbuttons.js';
+import JqxComboBox from 'jqwidgets-framework/jqwidgets-react/react_jqxcombobox.js';
 
 class FuncProcesesDataMovesGrid extends React.Component {
     constructor() {
@@ -162,12 +163,21 @@ class FuncProcesesDataMovesGrid extends React.Component {
                         });
                 }
             };
+        let sourcePtn =
+            {
+                datatype: 'json',
+                url: 'http://127.0.0.1:5000/v1.0/patterns',
+                id: 'ID',
+                root: 'Patterns',
+                async: false
+            };
 
         let idFuncProcess = -1;
 
         this.state = {
             source: source,
             sourceDG: sourceDG,
+            sourcePtn: sourcePtn,
             idFuncProcess: idFuncProcess
         };
 
@@ -222,12 +232,29 @@ class FuncProcesesDataMovesGrid extends React.Component {
                 this.refs.myGrid.deleterow(id);
             };
         });
+        this.refs.applyPtnBtn.on('click', () =>{
+            let cb = this.refs.myComboBox;
+            let item = cb.getSelectedItem();
+            if (item != null) {
+                fetch("http://127.0.0.1:5000/v1.0/organizations/" + this.props.idOrgCurrent + "/projects/" + this.props.idPrjCurrent + "/applypattern/" + item.value)
+                    .then((res) => {
+                        return res.json();
+                    })
+                    .then((data) => {
+                        //do something awesome that makes the world a better place
+                        //alert( JSON.stringify( data ));
+                        //alert(data.ID)
+                        commit(true);
+                    });
+            }
+        });
     }
 
       render() {
 
           let dataAdapter = new $.jqx.dataAdapter(this.state.source, { autoBind: true });
           let dataAdapterDG = new $.jqx.dataAdapter(this.state.sourceDG, { autoBind: true });
+          let dataAdapterPtn = new $.jqx.dataAdapter(this.state.sourcePtn, { autoBind: true });
 
           let rendertoolbar = (toolbar) => {
               let container = document.createElement('div');
@@ -354,20 +381,28 @@ class FuncProcesesDataMovesGrid extends React.Component {
 
           return (
               <div>
+                  <div style={{marginBottom:'3em'}}>
+                      Select Pattern
+                      <JqxComboBox ref='myComboBox' style={{ float: 'left', marginTop: 20 }} autoComplete={true}
+                                   width={200} height={25} source={dataAdapterPtn} selectedIndex={0} displayMember={'Name'} valueMember={'ID'}
+                      />
+                      <JqxButton ref='applyPtnBtn' value='Apply Pattern' style={{ float: 'left', marginTop: 20 }} />
+                  </div>
+
                   <div style={{ marginTop: 10 }}>
                       <JqxButton ref='addBtn' value='Add Row' style={{ float: 'left' }}/>
                       <JqxButton ref='multiAddBtn' value='Add 10 Rows' style={{ float: 'left' }}/>
                       <JqxButton ref='delBtn' value='Delete Row' style={{ float: 'left' }}/>
                   </div>
-              <JqxGrid ref='myGrid'
-                width={'100%'} source={dataAdapter} columns={columns}
-                editable={true} showtoolbar={false} rowdetails={true} initrowdetails={initrowdetails}
-                rowdetailstemplate={rowdetailstemplate} rowsheight={35} editmode={'selectedcell'} selectionmode={'singlecell'} enablekeyboarddelete={true}
-                />
-                <div style={{ marginTop: 10 }}>
-                    <JqxButton ref='refreshBtn' value='Refresh Data' style={{ float: 'left' }}/>
-                    <JqxButton ref='clearBtn' value='Clear' style={{ float: 'left' }}/>
-                </div>
+                  <JqxGrid ref='myGrid'
+                    width={'100%'} source={dataAdapter} columns={columns}
+                    editable={true} showtoolbar={false} rowdetails={true} initrowdetails={initrowdetails}
+                    rowdetailstemplate={rowdetailstemplate} rowsheight={35} editmode={'selectedcell'} selectionmode={'singlecell'} enablekeyboarddelete={true}
+                  />
+                  <div style={{ marginTop: 10 }}>
+                      <JqxButton ref='refreshBtn' value='Refresh Data' style={{ float: 'left' }}/>
+                      <JqxButton ref='clearBtn' value='Clear' style={{ float: 'left' }}/>
+                  </div>
               </div>
 
           )
