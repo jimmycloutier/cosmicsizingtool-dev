@@ -2,8 +2,7 @@ from flask import Flask, render_template, redirect, url_for
 from flask_cors import CORS
 
 import os
-os.environ['DEBUG'] = '1'
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 
 cosmicsztool = Flask(__name__)
 CORS(cosmicsztool)

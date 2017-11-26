@@ -28,11 +28,10 @@ class BusinessDataMovement(object):
             return
 
         move = received_dm.Move
-        move = move.upper()
         if  not isValidMove(move):
             return
 
-        new_dm = DataMovements(dmName=received_dm.Name, move=move, fp_id=fp_id)
+        new_dm = DataMovements(dmName=received_dm.Name, movement=move, fp_id=fp_id)
 
         db.session.add(new_dm)
         db.session.commit()
@@ -56,10 +55,14 @@ class BusinessDataMovement(object):
             dm.dmName = getattr(received_dm, 'Name', dm.dmName)
 
             move = getattr(received_dm, 'Move', dm.movement)
+            print('Move is:' +move)
             if move:
-                move = move.upper()
+                print('In move')
                 if isValidMove(move):
+                    print('Is valid move')
                     dm.movement = move
+                else:
+                    print('Is NOT valid move')
 
             db.session.commit()
             return True

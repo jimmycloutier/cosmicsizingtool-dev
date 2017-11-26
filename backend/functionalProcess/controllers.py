@@ -40,6 +40,7 @@ def get_patternfunctionalprocesses(pattern_id):
 @functionprocess.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocesses", methods=['POST'])
 def create_functionalprocesses(organization_id, project_id):
     """Create a new functional process for a project <project_id>"""
+
     if not request.json or not 'Name' in request.json:
         abort(400)
 
@@ -54,6 +55,7 @@ def create_functionalprocesses(organization_id, project_id):
 @functionprocess.route("/v1.0/patterns/<pattern_id>/funcprocesses", methods=['POST'])
 def create_patternfunctionalprocesses(pattern_id):
     """Create a new functional process for a pattern <pattern_id> """
+
     if not request.json or not 'Name' in request.json:
         abort(400)
 

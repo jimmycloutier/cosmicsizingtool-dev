@@ -26,11 +26,10 @@ class BusinessPatternDataMovement(object):
             return
 
         move = received_dm.Move
-        move = move.upper()
         if  not isValidMove(move):
             return
 
-        new_dm = PatternDataMovements(dmName=received_dm.Name, move=move, fp_id=fp_id)
+        new_dm = PatternDataMovements(dmName=received_dm.Name, movement=move, fp_id=fp_id)
 
         db.session.add(new_dm)
         db.session.commit()

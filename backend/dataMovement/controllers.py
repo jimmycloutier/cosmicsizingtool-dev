@@ -60,10 +60,10 @@ def get_patterndatamovements(pattern_id, fp_id):
     all_dms = {'DataMovements' : [dm.to_json() for dm in dms]}
     return jsonify(all_dms)
 
-@datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocsses/<fp_id>/datamoves", methods=['POST'])
+@datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocesses/<fp_id>/datamoves", methods=['POST'])
 def create_datamovements(organization_id, project_id, fp_id):
     """Create new datamovement for a specific functional process <fp_id>"""
-    if not request.json or not 'Name' in request.json or 'Move' in request.json :
+    if not request.json or not 'Name' in request.json or not 'Move' in request.json :
         abort(400)
 
     received_dm = json2obj(request.data)
@@ -101,6 +101,7 @@ def get_this_patterndatamovement(pattern_id, fp_id, dm_id):
 @datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocesses/<fp_id>/datamoves/<dm_id>", methods=['PUT'])
 def update_datamovement(organization_id, project_id, fp_id, dm_id):
     """Update a specific datamovement <dm_id>"""
+    print(request.json)
     if not request.json:
         abort(400)
     received_dm = json2obj(request.data)
