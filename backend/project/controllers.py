@@ -75,6 +75,7 @@ def apply_pattern(organization_id, project_id, pattern_id):
     JSON request can contain a list of datamovement names that need to be used for the project instead of the one
     specified in the pattern
     """
+
     if request.json:
         received_renameList = json2dict(request.data)
     else:

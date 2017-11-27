@@ -38,7 +38,7 @@ class Projects extends Component {
                   return (<div className = {idPrjCurrent === project.ID ? "selected row project" : "row project"} key={project.ID} data-idPrj={project.ID} onClick={this.handlePrjChange} >
                       {project.Name}
                   </div>)
-          }
+                }
               )
           }
         </div>

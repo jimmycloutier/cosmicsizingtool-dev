@@ -127,7 +127,6 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     //and with parameter false if the synchronization failed.
                     console.log('Delete Row : ' + rowid);
                     fetch("http://127.0.0.1:5000/v1.0/organizations/" + this.props.idOrgCurrent + "/projects/" + this.props.idPrjCurrent + "/funcprocesses/" + this.state.idFuncProcess + "/datamoves/" + rowid, {
-
                         method: "DELETE"
                     })
                         .then( (response) => {
@@ -242,9 +241,7 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     })
                     .then((data) => {
                         //do something awesome that makes the world a better place
-                        //alert( JSON.stringify( data ));
-                        //alert(data.ID)
-                        commit(true);
+
                     });
             }
         });
