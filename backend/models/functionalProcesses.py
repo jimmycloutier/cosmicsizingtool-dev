@@ -10,6 +10,7 @@ class FunctionalProcesses(basemodel.Base):
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
 
     project = db.relationship('Projects', foreign_keys=[project_id])
+    datamoves = db.relationship('DataMovements', cascade='delete')
 
     def __repr__(self):
         return self.fpName

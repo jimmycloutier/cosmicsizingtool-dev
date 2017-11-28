@@ -23,11 +23,6 @@ def get_all_patterndatamovements():
     all_pdms = {'PatternDataMovements': [pdm.to_json() for pdm in pdms]}
     return jsonify(all_pdms)
 
-
-
-
-
-
 @datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/datamoves", methods=['GET'])
 def get_datamovements_specific_project(organization_id, project_id):
     """Get all datamovements for a specific project <project_id>"""
@@ -41,10 +36,6 @@ def get_patterndatamovements_specific_pattern(pattern_id):
     dms = BusinessPatternDataMovement.datamovements_specific_pattern(pattern_id)
     all_dms = {'DataMovements' : [dm.to_json() for dm in dms]}
     return jsonify(all_dms)
-
-
-
-
 
 @datamovement.route("/v1.0/organizations/<organization_id>/projects/<project_id>/funcprocesses/<fp_id>/datamoves", methods=['GET'])
 def get_datamovements(organization_id, project_id, fp_id):

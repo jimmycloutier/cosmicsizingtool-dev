@@ -52,7 +52,6 @@ class BusinessFunctionalProcess(object):
         if fp:
             db.session.delete(fp)
             db.session.commit()
-            db.session.commit()
             return True
         else:
             return False

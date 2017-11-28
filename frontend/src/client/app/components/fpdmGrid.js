@@ -355,7 +355,9 @@ class FuncProcesesDataMovesGrid extends React.Component {
                           { text: 'DG Move', datafield: 'Move', width: 200 },
                           {text: 'Size', editable: false, datafield: 'size',
                             cellsrenderer: (index, datafield, value, defaultvalue, column, rowdata) => {
-                                let total = rowdata.Move.length;
+                                let total = 0;
+                                if (rowdata.Move != null)
+                                    total = rowdata.Move.length;
                                 return '<div style="margin: 4px;" class="jqx-right-align">' + dataAdapter.formatNumber(total, 'n') + '</div>';
                             }
                           }
