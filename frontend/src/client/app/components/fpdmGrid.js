@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import JqxGrid from 'jqwidgets-framework/jqwidgets-react/react_jqxgrid';
 import JqxButton from 'jqwidgets-framework/jqwidgets-react/react_jqxbuttons.js';
 import JqxComboBox from 'jqwidgets-framework/jqwidgets-react/react_jqxcombobox.js';
+import JqxWindow from 'jqwidgets-framework/jqwidgets-react/react_jqxwindow.js';
 
 class FuncProcesesDataMovesGrid extends React.Component {
     constructor() {
@@ -241,6 +242,8 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     })
                     .then((data) => {
                         //do something awesome that makes the world a better place
+                        console.log('Open windows');
+                        this.refs.jqxWindow.open();
 
                     });
             }
@@ -398,6 +401,22 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     editable={true} showtoolbar={false} rowdetails={true} initrowdetails={initrowdetails}
                     rowdetailstemplate={rowdetailstemplate} rowsheight={35} editmode={'selectedcell'} selectionmode={'singlecell'} enablekeyboarddelete={true}
                   />
+                  <JqxWindow ref='jqxWindow'
+                             width={500} height={300} position={{ x: 60, y: 175 }}
+                             minWidth={200} minHeight={200} maxWidth={700}
+                             maxHeight={400} showCollapseButton={false}
+                  >
+                      <div>
+                          <div>
+                              Please click "OK", "Cancel" or the close button to close the modal window. The dialog
+                              result will be displayed in the events log.
+                          </div>
+                          <div style={{ float: 'right', marginTop: '15px' }}>
+                              <JqxButton ref='okButton' width={80} value='OK' style={{ display: 'inline-block', marginRight: 10 }} className='ok' />
+                              <JqxButton ref='cancelButton' width={80} value='Cancel' style={{ display: 'inline-block' }} className='cancel' />
+                          </div>
+                      </div>
+                  </JqxWindow>
                   <div style={{ marginTop: 10 }}>
                       <JqxButton ref='refreshBtn' value='Refresh Data' style={{ float: 'left' }}/>
                       <JqxButton ref='clearBtn' value='Clear' style={{ float: 'left' }}/>
