@@ -243,7 +243,12 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     .then((data) => {
                         //do something awesome that makes the world a better place
                         console.log('Open windows');
+                        this.refs.jqxWindow.setContent('<h1> Allo Lucie </h1> ' +
+                                                        '<br> First name: <input type="text" name="fname" id="txt_name" value="Baloone"><br><br>' +
+                                                        '<input type="button" id="ok" value="OK" />' +
+                                                        '<input type="button" id="cancel" value="Cancel" />');
                         this.refs.jqxWindow.open();
+                        alert($('#txt_name').val());
 
                     });
             }
@@ -402,19 +407,18 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     rowdetailstemplate={rowdetailstemplate} rowsheight={35} editmode={'selectedcell'} selectionmode={'singlecell'} enablekeyboarddelete={true}
                   />
                   <JqxWindow ref='jqxWindow'
-                             width={500} height={300} position={{ x: 60, y: 175 }}
-                             minWidth={200} minHeight={200} maxWidth={700}
-                             maxHeight={400} showCollapseButton={false}
+                             width={500} height={300}
+                             showCollapseButton={false}
+                             autoOpen={false}
+                             resizable={false}
                   >
-                      <div>
-                          <div>
-                              Please click "OK", "Cancel" or the close button to close the modal window. The dialog
-                              result will be displayed in the events log.
-                          </div>
-                          <div style={{ float: 'right', marginTop: '15px' }}>
-                              <JqxButton ref='okButton' width={80} value='OK' style={{ display: 'inline-block', marginRight: 10 }} className='ok' />
-                              <JqxButton ref='cancelButton' width={80} value='Cancel' style={{ display: 'inline-block' }} className='cancel' />
-                          </div>
+                      <div >
+                        <span>
+                            Set data group
+                        </span>
+                      </div>
+                      <div style={{ overflow: 'hidden' }}>
+                          Content
                       </div>
                   </JqxWindow>
                   <div style={{ marginTop: 10 }}>
