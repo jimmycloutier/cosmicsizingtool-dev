@@ -81,6 +81,7 @@ def apply_pattern(organization_id, project_id, pattern_id):
     else:
         received_renameList = {}
 
+    print(received_renameList)
     success = BusinessProject.apply_pattern(organization_id,project_id, pattern_id,received_renameList )
 
     if success:

@@ -76,6 +76,12 @@ class BusinessProject(object):
 
         for fp in fps:
             fp_poco = fp.to_poco_obj()
+            print(fp_poco.Name)
+            print(dmsToRename)
+            if any(s in fp_poco.Name for s in dmsToRename):
+                matching = [s for s in dmsToRename if s in fp_poco.Name]
+                fp_poco.Name = (fp_poco.Name).replace(matching[0],dmsToRename[matching[0]] )
+
             new_fpId = BusinessFunctionalProcess.create(organization_id, project_id, fp_poco)
             if new_fpId > 0:
                 dms = BusinessPatternDataMovement.datamovements(pattern_id, fp.id)
@@ -83,7 +89,6 @@ class BusinessProject(object):
                     dm_poco = dm.to_poco_obj()
                     if dm_poco.Name in dmsToRename:
                         dm_poco.Name = dmsToRename[dm_poco.Name]
-
 
                     BusinessDataMovement.create(organization_id, project_id, new_fpId, dm_poco)
 
