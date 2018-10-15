@@ -193,6 +193,21 @@ class FuncProcesesDataMovesGrid extends React.Component {
         this.refs.myGrid.updatebounddata('cells');
     }
 
+    contentHTMLdg(){
+        let tempHTML = '<h1> Set datagroup name</h1> ' +
+            '<br> First name: <input type="text" name="fname" id="txt_name" value="BalooneXYZ"><br><br>' +
+            '<input type="button" id="ok2" value="OK" className="ok2" />' +
+            '<input type="button" id="cancel2" value="Cancel" className="cancel2" />';
+        //return tempHTML;
+
+        return              '<div>' +
+                'Please click "OK", "Cancel" or the close button to close the modal window. The dialog' +
+                'result will be displayed in the events log12.' +
+                '<input type="button" onclick="$("#jqxWindow").jqxWindow("close");" id="ok2" ref="okButton2" width={80} value="OK" style={{ display: "inline-block", marginRight: 10 }} className="ok2" />' +
+                '<input type="button"  ref="cancelButton2" width={80} value="Cancel" style={{ display: "inline-block" }} className="cancel" />' +
+                '</div>';
+    }
+
     componentWillReceiveProps(nextProps){
         if (nextProps.idPrjCurrent !== this.props.idPrjCurrent && nextProps.idPrjCurrent!=-1) {
             this.refreshView(nextProps.idOrgCurrent, nextProps.idPrjCurrent)
@@ -232,10 +247,45 @@ class FuncProcesesDataMovesGrid extends React.Component {
                 this.refs.myGrid.deleterow(id);
             };
         });
+        this.refs.jqxWindow.on('close', (event) => {
+
+            if (event.type === 'close') {
+
+                if (event.args.dialogResult.OK) {
+
+                    let cb = this.refs.myComboBox;
+                    let item = cb.getSelectedItem();
+                    if (item != null) {
+                        fetch("http://127.0.0.1:5000/v1.0/organizations/" + this.props.idOrgCurrent + "/projects/" + this.props.idPrjCurrent + "/applypattern/" + item.value,
+                        {
+                            method: 'PATCH',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                '<First DG>': $('#dg1').val(),
+                                '<Second DG>': $('#dg2').val(),
+                                '<Third DG>': $('#dg3').val(),
+                            })
+                        }).then((res) => {
+                                return res.json();
+                            })
+                            .then((data) => {
+
+                                this.refreshView(this.props.idOrgCurrent, this.props.idPrjCurrent)
+
+                            });
+                    }
+                }
+            }
+
+        });
         this.refs.applyPtnBtn.on('click', () =>{
             let cb = this.refs.myComboBox;
             let item = cb.getSelectedItem();
             if (item != null) {
+                /*
                 fetch("http://127.0.0.1:5000/v1.0/organizations/" + this.props.idOrgCurrent + "/projects/" + this.props.idPrjCurrent + "/applypattern/" + item.value)
                     .then((res) => {
                         return res.json();
@@ -243,12 +293,34 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     .then((data) => {
                         //do something awesome that makes the world a better place
                         console.log('Open windows');
-                        this.refs.jqxWindow.setContent('<h1> Allo Lucie </h1> ' +
-                                                        '<br> First name: <input type="text" name="fname" id="txt_name" value="Baloone"><br><br>' +
-                                                        '<input type="button" id="ok" value="OK" />' +
-                                                        '<input type="button" id="cancel" value="Cancel" />');
+                        //this.refs.jqxWindow.setContent(this.contentHTMLdg());
                         this.refs.jqxWindow.open();
-                        alert($('#txt_name').val());
+                        alert($('#dg1').val());
+
+                    });
+                  */
+                fetch("http://127.0.0.1:5000/v1.0/patterns/" + item.value + "/datamoves")
+                    .then((res) => {
+                        return res.json();
+                    })
+                    .then((data) => {
+                        //Display datamovement
+                        for(i = 0; i < 20; i++){
+                            if (data.DataMovements.length > i){
+                                $('#dg' + (i+1)).show();
+                                $('label[for=dg' + (i+1)+ '], input#dg' + (i+1)).show();
+                                $('#dg' + (i+1)).val(data.DataMovements[i].Name);
+                                $('#dg' + (i+1)).attr("placeholder", data.DataMovements[i].Name);
+                            }
+                            else {
+                                $('#dg' + (i+1)).hide();
+                                $('label[for=dg' + (i+1)+ '], input#dg' + (i+1)).hide();
+                            }
+                        }
+
+
+                        this.refs.jqxWindow.open();
+
 
                     });
             }
@@ -407,18 +479,43 @@ class FuncProcesesDataMovesGrid extends React.Component {
                     rowdetailstemplate={rowdetailstemplate} rowsheight={35} editmode={'selectedcell'} selectionmode={'singlecell'} enablekeyboarddelete={true}
                   />
                   <JqxWindow ref='jqxWindow'
-                             width={500} height={300}
+                             width={500} height={425}
                              showCollapseButton={false}
                              autoOpen={false}
                              resizable={false}
+                             cancelButton={'.cancel'} okButton={'.ok'}
                   >
-                      <div >
-                        <span>
-                            Set data group
-                        </span>
+                      <div>
+                          <img width="14" height="14" src="../../images/help.png" alt="" />
+                          Enter DataGroup
                       </div>
-                      <div style={{ overflow: 'hidden' }}>
-                          Content
+                      <div>
+                          <div>
+                              <label htmlFor="dg1">DG1:</label> <input id="dg1" type="text" name="dg1" /> <br/>
+                              <label htmlFor="dg2">DG2:</label> <input id="dg2" type="text" name="dg2" /> <br/>
+                              <label htmlFor="dg3">DG3:</label> <input id="dg3" type="text" name="dg3" /> <br/>
+                              <label htmlFor="dg4">DG4:</label> <input id="dg4" type="text" name="dg4" /> <br/>
+                              <label htmlFor="dg5">DG5:</label> <input id="dg5" type="text" name="dg5" /> <br/>
+                              <label htmlFor="dg6">DG6:</label> <input id="dg6" type="text" name="dg6" /> <br/>
+                              <label htmlFor="dg7">DG7:</label> <input id="dg7" type="text" name="dg7" /> <br/>
+                              <label htmlFor="dg8">DG8:</label> <input id="dg8" type="text" name="dg8" /> <br/>
+                              <label htmlFor="dg9">DG9:</label> <input id="dg9" type="text" name="dg9" /> <br/>
+                              <label htmlFor="dg10">DG10:</label> <input id="dg10" type="text" name="dg10" /> <br/>
+                              <label htmlFor="dg11">DG11:</label> <input id="dg11" type="text" name="dg11" /> <br/>
+                              <label htmlFor="dg12">DG12:</label> <input id="dg12" type="text" name="dg12" /> <br/>
+                              <label htmlFor="dg13">DG13:</label> <input id="dg13" type="text" name="dg13" /> <br/>
+                              <label htmlFor="dg14">DG14:</label> <input id="dg14" type="text" name="dg14" /> <br/>
+                              <label htmlFor="dg15">DG15:</label> <input id="dg15" type="text" name="dg15" /> <br/>
+                              <label htmlFor="dg16">DG16:</label> <input id="dg16" type="text" name="dg16" /> <br/>
+                              <label htmlFor="dg17">DG17:</label> <input id="dg17" type="text" name="dg17" /> <br/>
+                              <label htmlFor="dg18">DG18:</label> <input id="dg18" type="text" name="dg18" /> <br/>
+                              <label htmlFor="dg19">DG19:</label> <input id="dg19" type="text" name="dg19" /> <br/>
+                              <label htmlFor="dg20">DG20:</label> <input id="dg20" type="text" name="dg20" /> <br/>
+                          </div>
+                          <div style={{ float: 'right', marginTop: '15px' }}>
+                              <JqxButton ref='okButton' width={80} value='OK' style={{ display: 'inline-block', marginRight: 10 }} className='ok' />
+                              <JqxButton ref='cancelButton' width={80} value='Cancel' style={{ display: 'inline-block' }} className='cancel' />
+                          </div>
                       </div>
                   </JqxWindow>
                   <div style={{ marginTop: 10 }}>
