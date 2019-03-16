@@ -1,10 +1,12 @@
 from flask import Flask, render_template, redirect, url_for
 from flask_cors import CORS
+from flasgger import Swagger
 
 import os
 
 
 cosmicsztool = Flask(__name__)
+swagger = Swagger(cosmicsztool)
 CORS(cosmicsztool)
 
 cosmicsztool.config.from_object('config')

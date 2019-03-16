@@ -10,7 +10,34 @@ def test_pattern_route():
 
 @pattern.route("/v1.0/patterns", methods=['GET'])
 def get_all_patterns():
-    """Get all patterns from database"""
+    """Get all patterns from database
+            This is using docstrings for specifications.
+    ---
+    parameters:
+      - name: palette
+        in: path
+        type: string
+        enum: ['all', 'rgb', 'cmyk']
+        required: true
+        default: all
+    definitions:
+      Palette:
+        type: object
+        properties:
+          palette_name:
+            type: array
+            items:
+              $ref: '#/definitions/Color'
+      Color:
+        type: string
+    responses:
+      200:
+        description: A list of colors (may be filtered by palette)
+        schema:
+          $ref: '#/definitions/Palette'
+        examples:
+          rgb: ['red', 'green', 'blue']
+    """
     ptns = BusinessPattern.all_db_patterns()
     all_ptns = {'Patterns' : [ptn.to_json() for ptn in ptns]}
     return jsonify(all_ptns)
