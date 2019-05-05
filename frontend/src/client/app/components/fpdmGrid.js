@@ -453,6 +453,8 @@ class FuncProcesesDataMovesGrid extends React.Component {
                   {text: 'Size', editable: false, datafield: 'size',
                       cellsrenderer: (index, datafield, value, defaultvalue, column, rowdata) => {
                           let total = 0;
+                          if (rowdata.CFP != null)
+                              total = rowdata.CFP;
                           return '<div style="margin: 4px;" class="jqx-right-align">' + dataAdapter.formatNumber(total, 'n') + '</div>';
                       }
                   }

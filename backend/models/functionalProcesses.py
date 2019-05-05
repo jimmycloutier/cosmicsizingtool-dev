@@ -1,7 +1,7 @@
 import types
-from models import db, basemodel
-from models.projects import Projects
-from models.patterns import Patterns
+from models import db, basemodel, dataMovements
+from sqlalchemy.sql import func
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 
 class FunctionalProcesses(basemodel.Base):
     __tablename__ = 'functionalprocesses'
@@ -15,14 +15,21 @@ class FunctionalProcesses(basemodel.Base):
     def __repr__(self):
         return self.fpName
 
+    @hybrid_property
+    def CFP(self):
+        i = 0
+        for datamove in self.datamoves:
+            i = i + datamove.CFP
+        return i
+
     def to_json(self):
         return {
             'ID' : self.id,
             'Name' : self.fpName,
             'prj_ID' : self.project_id,
-            'Prj' : self.project.projectName
+            'Prj' : self.project.projectName,
+            'CFP' : self.CFP
         }
-
 
 class PatternFunctionalProcesses(basemodel.Base):
     __tablename__ = 'patternfunctionalprocesses'

@@ -21,7 +21,7 @@ class FunctionalProcessesDataMovementsFrame extends Component {
 
                 <div className =  "row">
                     <h1>Functional Processes and Datamovements</h1>
-                    <h2>Org: {this.props.idOrgCurrent} / Proj: {this.props.idPrjCurrent}</h2>
+                    <h2>Org: {this.props.idOrgCurrent} / Proj: {this.props.idPrjCurrent} / CFP : {this.props.projectList || "0"}   </h2>
                 </div>
                 <div>
                     <FuncProcessesDataMovesGrid idOrgCurrent={ this.props.idOrgCurrent} idPrjCurrent={this.props.idPrjCurrent} />
