@@ -31,11 +31,11 @@ class Projects extends Component {
         return (
 
         <div>
-            <div className =  "row">
+            <div className =  "headerL">
                 Project
             </div>
           {projects.map((project) => {
-                  return (<div className = {idPrjCurrent === project.ID ? "selected row project" : "row project"} key={project.ID} data-idPrj={project.ID} onClick={this.handlePrjChange} >
+                  return (<div className = {idPrjCurrent === project.ID ? "selected" : ""} key={project.ID} data-idPrj={project.ID} onClick={this.handlePrjChange} >
                       {project.Name} ({project.CFP} CFP)
                   </div>)
                 }

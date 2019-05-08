@@ -6,7 +6,7 @@ import Projects from '../components/projects'
 import FunctionalProcessesDataMovements from './functionalProcessesDataMovementsFrame'
 
 //import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-//import '../../../../style/styles-less.less';
+import '../../../../style/styles-less.less';
 //import './style/styles.less';
 
 class cosmicSizingApp extends Component {
@@ -26,15 +26,15 @@ class cosmicSizingApp extends Component {
     render() {
 
         return (
-        <div className="container-fluid" >
-        <div className="row">
-            <div className="col-xs-2" id="organizations">
+        <div>
+        <div>
+            <div id="organizations">
                 <Organization/>
             </div>
-            <div className="col-xs-2" id="projects">
+            <div id="projects">
                 <Projects/>
             </div>
-            <div className="col-xs-8" id ="functionalProcessesDataMovements">
+            <div id ="functionalProcessesDataMovements">
                 <FunctionalProcessesDataMovements/>
 
             </div>
@@ -50,20 +50,5 @@ cosmicSizingApp.propTypes = {
     dispatch: PropTypes.func.isRequired
 }
 
-//Mapping des variables et du store
-/*
-function mapStateToProps(state) {
-    const { uiState, projectList,organizationList } = state;
-    const {
-        idOrgCurrent: PropTypes.number.isRequired,
-        idPrjCurrent: PropTypes.number.isRequired
-
-    } = uiState || {idOrgCurrent:-1, idPrjCurrent:-1};
-
-    return {
-        idOrgCurrent,
-        idPrjCurrent
-    }
-}*/
 
 export default connect(null)(cosmicSizingApp)

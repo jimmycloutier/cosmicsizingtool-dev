@@ -19,7 +19,7 @@ class FunctionalProcessesDataMovementsFrame extends Component {
         return (
             <div>
 
-                <div className =  "row">
+                <div>
                     <h1>Functional Processes and Datamovements</h1>
                     <h2>Org: {this.props.idOrgCurrent} / Proj: {this.props.idPrjCurrent} / CFP : {this.props.projectList || "0"}   </h2>
                 </div>

@@ -28,11 +28,10 @@ class Organization extends Component {
 
         return (
             <div>
-                <div className =  "row">
-                    Organization
+                <div className = "headerL">Organization
                 </div>
           {organizations.map(organization =>
-              <div className = {idOrgCurrent===organization.ID ? "selected row organization" : "row organization"} data-idOrg={organization.ID} key={organization.ID} onClick={this.handleOrgChange}>
+              <div className = {idOrgCurrent===organization.ID ? "selected" : ""} data-idOrg={organization.ID} key={organization.ID} onClick={this.handleOrgChange}>
                   {organization.Name}
               </div>)
           }
