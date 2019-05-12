@@ -27,19 +27,17 @@ class cosmicSizingApp extends Component {
 
         return (
         <div>
-        <div>
-            <div id="organizations">
-                <Organization/>
-            </div>
-            <div id="projects">
-                <Projects/>
-            </div>
-            <div id ="functionalProcessesDataMovements">
-                <FunctionalProcessesDataMovements/>
 
-            </div>
+                <div className="col-xs-2" id="organizations">
+                    <Organization/>
+                </div>
+                <div className="col-xs-2" id="projects">
+                    <Projects/>
+                </div>
+                <div className="col-xs-8"  id ="functionalProcessesDataMovements">
+                    <FunctionalProcessesDataMovements/>
+                </div>
 
-        </div>
         </div>
     )
 

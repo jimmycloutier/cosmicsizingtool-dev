@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import FuncProcessesDataMovesGrid from '../components/fpdmGrid'
+import FuncProcessesDataMovesGrid from '../components/fpdmGrid';
 
 class FunctionalProcessesDataMovementsFrame extends Component {
 
@@ -19,10 +19,22 @@ class FunctionalProcessesDataMovementsFrame extends Component {
         return (
             <div>
 
-                <div>
-                    <h1>Functional Processes and Datamovements</h1>
-                    <h2>Org: {this.props.idOrgCurrent} / Proj: {this.props.idPrjCurrent} / CFP : {this.props.projectList || "0"}   </h2>
+                <div className = "headerL">
+                    Functional Process and Data movement
+                    {/*
+                    <h2>Org: {this.props.idOrgCurrent} / Proj: {this.props.idPrjCurrent} / CFP : {JSON.stringify(this.props.projects, ['CFP']) || 0}  / Info : {this.props.projects.values() || 0}  </h2>
+                    */}
                 </div>
+                {/*
+                <div>
+                    {this.props.projects.map((project) => {
+                            return (<div className = {"selected"} key={project.ID} data-idPrj={project.ID}>
+                                {project.Name} ({project.CFP} CFP)
+                            </div>)
+                        }
+                    )
+                    }
+                </div>*/}
                 <div>
                     <FuncProcessesDataMovesGrid idOrgCurrent={ this.props.idOrgCurrent} idPrjCurrent={this.props.idPrjCurrent} />
                 </div>
@@ -35,16 +47,24 @@ class FunctionalProcessesDataMovementsFrame extends Component {
 
 FunctionalProcessesDataMovementsFrame.propTypes = {
     idPrjCurrent: PropTypes.number.isRequired,
-    idOrgCurrent: PropTypes.number.isRequired
+    idOrgCurrent: PropTypes.number.isRequired,
+    projects:PropTypes.array.isRequired,
+    selectedPrj: PropTypes.number.isRequired
 }
 
 //Mapping vars with the store
 function mapStateToProps(state) {
-    const { uiState } = state;
+    const { uiState,projectList } = state;
     const {
         idOrgCurrent,
         idPrjCurrent,
     } = uiState || { idOrgCurrent:-1, idPrjCurrent:-1};
+
+    const {
+        isFetching:isFetchingPrj,
+        projects,
+        selectedPrj
+    } = projectList[idOrgCurrent] || { isFetching: true,projects: [],  selectedPrj: -1};
 
     /* const {functionalProcessesDataMovesDisplay } = state;
 
@@ -54,9 +74,13 @@ function mapStateToProps(state) {
      } = functionalProcessesDataMovesDisplay || { idPrjCurrent: -1, idOrgCurrent: -1};
 
     */
+
     return {
+        idOrgCurrent,
+        isFetchingPrj,
+        projects,
         idPrjCurrent,
-        idOrgCurrent
+        selectedPrj
     }
 }
 

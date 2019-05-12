@@ -67,5 +67,13 @@ export function giveProjectList(idOrg) {
     }
 }
 
+export function refreshProjectList(idOrg) {
+    return (dispatch, getState) => {
+
+            dispatch(getProjects(idOrg));
+
+    }
+}
+
 
 

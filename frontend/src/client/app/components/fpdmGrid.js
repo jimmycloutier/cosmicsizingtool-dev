@@ -6,6 +6,7 @@ import JqxGrid from 'jqwidgets-framework/jqwidgets-react/react_jqxgrid';
 import JqxButton from 'jqwidgets-framework/jqwidgets-react/react_jqxbuttons.js';
 import JqxComboBox from 'jqwidgets-framework/jqwidgets-react/react_jqxcombobox.js';
 import JqxWindow from 'jqwidgets-framework/jqwidgets-react/react_jqxwindow.js';
+import {refreshProjectList} from "../actions/projectAction";
 
 class FuncProcesesDataMovesGrid extends React.Component {
     constructor() {
@@ -43,7 +44,12 @@ class FuncProcesesDataMovesGrid extends React.Component {
                             //alert( JSON.stringify( data ));
                             //alert(data.ID)
                             commit(true, data.ID);
-                        });
+                        })
+                        .then((data) => {
+
+                        this.refreshView(this.props.idOrgCurrent, this.props.idPrjCurrent)
+
+                    });
 
 
                 },
@@ -56,7 +62,12 @@ class FuncProcesesDataMovesGrid extends React.Component {
                         .then( (response) => {
                             //do something awesome that makes the world a better place
                             commit(true);
-                        });
+                        })
+                        .then((data) => {
+
+                        this.refreshView(this.props.idOrgCurrent, this.props.idPrjCurrent)
+
+                    });
                 },
                 updaterow: (rowid, newdata, commit) => {
                     // synchronize with the server - send update command
@@ -82,6 +93,11 @@ class FuncProcesesDataMovesGrid extends React.Component {
                             //alert( JSON.stringify( data ));
                             //alert(data.ID)
                             commit(true, data.ID);
+                        })
+                        .then((data) => {
+
+                            this.refreshView(this.props.idOrgCurrent, this.props.idPrjCurrent)
+
                         });
                 }
             };
@@ -120,6 +136,11 @@ class FuncProcesesDataMovesGrid extends React.Component {
                             //alert( JSON.stringify( data ));
                             //alert(data.ID)
                             commit(true, data.ID);
+                        })
+                        .then((data) => {
+
+                            this.refreshView(this.props.idOrgCurrent, this.props.idPrjCurrent)
+
                         });
                 },
                 deleterow: (rowid, commit) => {
@@ -133,6 +154,11 @@ class FuncProcesesDataMovesGrid extends React.Component {
                         .then( (response) => {
                             //do something awesome that makes the world a better place
                             commit(true);
+                        })
+                        .then((data) => {
+
+                            this.refreshView(this.props.idOrgCurrent, this.props.idPrjCurrent)
+
                         });
                 },
                 updaterow: (rowid, newdata, commit) => {
@@ -160,6 +186,11 @@ class FuncProcesesDataMovesGrid extends React.Component {
                         .then( (response) => {
                             //do something awesome that makes the world a better place
                             commit(true);
+                        })
+                        .then((data) => {
+
+                            this.refreshView(this.props.idOrgCurrent, this.props.idPrjCurrent)
+
                         });
                 }
             };
@@ -186,6 +217,11 @@ class FuncProcesesDataMovesGrid extends React.Component {
     refreshView(idOrg, idProj){
         let temp = this.state.source;
         temp.url = 'http://127.0.0.1:5000/v1.0/organizations/' + idOrg+ '/projects/' + idProj + '/funcprocesses';
+
+        const { dispatch } = this.props;
+
+        dispatch(refreshProjectList(idOrg));
+
         this.setState({
             source: temp
         });
@@ -216,7 +252,7 @@ class FuncProcesesDataMovesGrid extends React.Component {
 
     componentDidMount() {
         this.refs.refreshBtn.on('click', () => {
-                this.refreshView(this.props.idOrgCurrent, this.props.idPrjCurrent)
+                this.refreshView(this.props.idOrgCurrent, this.props.idPrjCurrent);
         });
         this.refs.clearBtn.on('click', () => {
             this.refs.myGrid.clear();
@@ -360,7 +396,7 @@ class FuncProcesesDataMovesGrid extends React.Component {
           let nestedGrids = new Array();
           let rowdetailstemplate = {
               //rowdetails:'<div id="grid" style="margin: 10px;"></div><button class="nested-button">Add row</button><button class="nested-button">Add 10 rows</button><button class="nested-button">Delete row</button>',
-              rowdetails:'<div id="grid" style="margin: 10px;"></div>',
+              rowdetails:'<div id="grid" style="margin: 0px;"></div>',
               rowdetailsheight: 220,
               rowdetailshidden: true
           };
@@ -393,7 +429,7 @@ class FuncProcesesDataMovesGrid extends React.Component {
                       console.log('Del row in Nested Grid', grid[0].id);
                   });*/
                   grid.jqxGrid({
-                      source: nestedGridAdapter, width: 780, height: 200, editable: true,editmode: 'selectedcell',
+                      source: nestedGridAdapter, width: 430, height: 200, editable: true,editmode: 'selectedcell',
                       selectionmode: 'singlecell',
                       showstatusbar: true,
                       renderstatusbar: (statusbar) => {
@@ -431,103 +467,135 @@ class FuncProcesesDataMovesGrid extends React.Component {
                           });
                       },
                       columns: [
-                          { text: 'DG Name', datafield: 'Name', width: 200 },
-                          { text: 'DG Move', datafield: 'Move', width: 200 },
-                          {text: 'Size', editable: false, datafield: 'size',
+                          { text: 'DG Name', datafield: 'Name', width: 210 },
+                          { text: 'DG Move', datafield: 'Move', width: 100,
+                              createeditor: function(row, cellvalue, editor, celltext, cellwidth, cellheight) {
+                                  editor.css('text-transform', 'uppercase');
+                              },
+                              geteditorvalue: function(row, cellvalue, editor) {
+                                  return editor.val().toUpperCase();},
+                              validation: function (cell, value) {
+                                    const re = /[ABCDFGHIGKLMNOPQSTUVYZ]/g;
+                                    if(re.test(value) == true) {
+                                        return { result: false, message: "Invalid value" };
+                                    }
+                                    else {
+
+                                        var A= value.split("").sort().join("").match(/(.)\1/g);
+                                        if(A)
+                                            return { result: false, message: "Invalid value" }
+                                        else
+                                            return true;
+                                    }
+
+
+                              }
+
+                          },
+                          {text: 'Size', editable: false, width: 100, datafield: 'size',
                             cellsrenderer: (index, datafield, value, defaultvalue, column, rowdata) => {
                                 let total = 0;
                                 if (rowdata.Move != null)
                                     total = rowdata.Move.length;
+
                                 return '<div style="margin: 4px;" class="jqx-right-align">' + dataAdapter.formatNumber(total, 'n') + '</div>';
+
                             }
                           }
                       ]
                   });
-              }
-          }
+/*   .on('cellbeginedit', function(e) {
+   alert('test')
+})  ;*/
+                }
+            }
 
 
-          let columns =
-              [
-                  { text: 'Fnc Name', dataField: 'Name', width: 200 },
-                  {text: 'Size', editable: false, datafield: 'size',
-                      cellsrenderer: (index, datafield, value, defaultvalue, column, rowdata) => {
-                          let total = 0;
-                          if (rowdata.CFP != null)
-                              total = rowdata.CFP;
-                          return '<div style="margin: 4px;" class="jqx-right-align">' + dataAdapter.formatNumber(total, 'n') + '</div>';
-                      }
-                  }
-              ];
+let columns =
+[
+{ text: 'Fnc Name', dataField: 'Name', width: 310 },
+{text: 'Size', editable: false, width: 100, datafield: 'size',
+   cellsrenderer: (index, datafield, value, defaultvalue, column, rowdata) => {
+       let total = 0;
+       if (rowdata.CFP != null)
+           total = rowdata.CFP;
+       return '<div style="margin: 4px;" class="jqx-right-align">' + dataAdapter.formatNumber(total, 'n') + '</div>';
+   }
+}
+];
 
-          return (
-              <div>
-                  <div style={{marginBottom:'3em'}}>
-                      Select Pattern
-                      <JqxComboBox ref='myComboBox' style={{ float: 'left', marginTop: 20 }} autoComplete={true}
-                                   width={200} height={25} source={dataAdapterPtn} selectedIndex={0} displayMember={'Name'} valueMember={'ID'}
-                      />
-                      <JqxButton ref='applyPtnBtn' value='Apply Pattern' style={{ float: 'left', marginTop: 20 }} />
-                  </div>
+return (
+<div>
+    <div style={{ display: 'inline-block', float: 'left' }}>
+        <span style={{float: 'left'}}>Select Pattern</span>
+        <JqxComboBox ref='myComboBox'   autoComplete={true} style={{ float: 'left' }}
+                width={200} height={25} source={dataAdapterPtn} selectedIndex={0} displayMember={'Name'} valueMember={'ID'}
+        />
+        <JqxButton ref='applyPtnBtn' value='Apply Pattern' style={{ float: 'left' }}/>
+    </div>
+    <br/>
+    <br/>
+    <div style={{ display: 'inline-block', marginTop: 15, float: 'left' }}>
+       <JqxButton ref='addBtn' value='Add Row' style={{ float: 'left' }}/>
+       <JqxButton ref='multiAddBtn' value='Add 10 Rows' style={{ float: 'left' }}/>
+       <JqxButton ref='delBtn' value='Delete Row' style={{ float: 'left' }}/>
+    </div>
 
-                  <div style={{ marginTop: 10 }}>
-                      <JqxButton ref='addBtn' value='Add Row' style={{ float: 'left' }}/>
-                      <JqxButton ref='multiAddBtn' value='Add 10 Rows' style={{ float: 'left' }}/>
-                      <JqxButton ref='delBtn' value='Delete Row' style={{ float: 'left' }}/>
-                  </div>
-                  <JqxGrid ref='myGrid'
-                    width={'100%'} source={dataAdapter} columns={columns}
-                    editable={true} showtoolbar={false} rowdetails={true} initrowdetails={initrowdetails}
-                    rowdetailstemplate={rowdetailstemplate} rowsheight={35} editmode={'selectedcell'} selectionmode={'singlecell'} enablekeyboarddelete={true}
-                  />
-                  <JqxWindow ref='jqxWindow'
-                             width={500} height={425}
-                             showCollapseButton={false}
-                             autoOpen={false}
-                             resizable={false}
-                             cancelButton={'.cancel'} okButton={'.ok'}
-                  >
-                      <div>
-                          <img width="14" height="14" src="../../images/help.png" alt="" />
-                          Enter DataGroup
-                      </div>
-                      <div>
-                          <div>
-                              <label htmlFor="dg1">DG1:</label> <input id="dg1" type="text" name="dg1" /> <br/>
-                              <label htmlFor="dg2">DG2:</label> <input id="dg2" type="text" name="dg2" /> <br/>
-                              <label htmlFor="dg3">DG3:</label> <input id="dg3" type="text" name="dg3" /> <br/>
-                              <label htmlFor="dg4">DG4:</label> <input id="dg4" type="text" name="dg4" /> <br/>
-                              <label htmlFor="dg5">DG5:</label> <input id="dg5" type="text" name="dg5" /> <br/>
-                              <label htmlFor="dg6">DG6:</label> <input id="dg6" type="text" name="dg6" /> <br/>
-                              <label htmlFor="dg7">DG7:</label> <input id="dg7" type="text" name="dg7" /> <br/>
-                              <label htmlFor="dg8">DG8:</label> <input id="dg8" type="text" name="dg8" /> <br/>
-                              <label htmlFor="dg9">DG9:</label> <input id="dg9" type="text" name="dg9" /> <br/>
-                              <label htmlFor="dg10">DG10:</label> <input id="dg10" type="text" name="dg10" /> <br/>
-                              <label htmlFor="dg11">DG11:</label> <input id="dg11" type="text" name="dg11" /> <br/>
-                              <label htmlFor="dg12">DG12:</label> <input id="dg12" type="text" name="dg12" /> <br/>
-                              <label htmlFor="dg13">DG13:</label> <input id="dg13" type="text" name="dg13" /> <br/>
-                              <label htmlFor="dg14">DG14:</label> <input id="dg14" type="text" name="dg14" /> <br/>
-                              <label htmlFor="dg15">DG15:</label> <input id="dg15" type="text" name="dg15" /> <br/>
-                              <label htmlFor="dg16">DG16:</label> <input id="dg16" type="text" name="dg16" /> <br/>
-                              <label htmlFor="dg17">DG17:</label> <input id="dg17" type="text" name="dg17" /> <br/>
-                              <label htmlFor="dg18">DG18:</label> <input id="dg18" type="text" name="dg18" /> <br/>
-                              <label htmlFor="dg19">DG19:</label> <input id="dg19" type="text" name="dg19" /> <br/>
-                              <label htmlFor="dg20">DG20:</label> <input id="dg20" type="text" name="dg20" /> <br/>
-                          </div>
-                          <div style={{ float: 'right', marginTop: '15px' }}>
-                              <JqxButton ref='okButton' width={80} value='OK' style={{ display: 'inline-block', marginRight: 10 }} className='ok' />
-                              <JqxButton ref='cancelButton' width={80} value='Cancel' style={{ display: 'inline-block' }} className='cancel' />
-                          </div>
-                      </div>
-                  </JqxWindow>
-                  <div style={{ marginTop: 10 }}>
-                      <JqxButton ref='refreshBtn' value='Refresh Data' style={{ float: 'left' }}/>
-                      <JqxButton ref='clearBtn' value='Clear' style={{ float: 'left' }}/>
-                  </div>
-              </div>
+    <JqxGrid ref='myGrid'
+     width={'90%'} source={dataAdapter} columns={columns}
+     editable={true} showtoolbar={false} rowdetails={true} initrowdetails={initrowdetails}
+     rowdetailstemplate={rowdetailstemplate} rowsheight={35} editmode={'selectedcell'} selectionmode={'singlecell'} enablekeyboarddelete={true}
+    />
+    <div style={{ marginTop: 10 }}>
+        <JqxButton ref='refreshBtn' value='Refresh Data' style={{ float: 'left' }}/>
+        <JqxButton ref='clearBtn' value='Clear' style={{ float: 'left' }}/>
+    </div>
 
-          )
-      }
+    <JqxWindow ref='jqxWindow'
+          width={500} height={425}
+          showCollapseButton={false}
+          autoOpen={false}
+          resizable={false}
+          cancelButton={'.cancel'} okButton={'.ok'}
+    >
+       <div>
+           <img width="14" height="14" src="../../images/help.png" alt="" />
+           Enter DataGroup
+       </div>
+       <div>
+           <div>
+               <label htmlFor="dg1">DG1:</label> <input id="dg1" type="text" name="dg1" /> <br/>
+               <label htmlFor="dg2">DG2:</label> <input id="dg2" type="text" name="dg2" /> <br/>
+               <label htmlFor="dg3">DG3:</label> <input id="dg3" type="text" name="dg3" /> <br/>
+               <label htmlFor="dg4">DG4:</label> <input id="dg4" type="text" name="dg4" /> <br/>
+               <label htmlFor="dg5">DG5:</label> <input id="dg5" type="text" name="dg5" /> <br/>
+               <label htmlFor="dg6">DG6:</label> <input id="dg6" type="text" name="dg6" /> <br/>
+               <label htmlFor="dg7">DG7:</label> <input id="dg7" type="text" name="dg7" /> <br/>
+               <label htmlFor="dg8">DG8:</label> <input id="dg8" type="text" name="dg8" /> <br/>
+               <label htmlFor="dg9">DG9:</label> <input id="dg9" type="text" name="dg9" /> <br/>
+               <label htmlFor="dg10">DG10:</label> <input id="dg10" type="text" name="dg10" /> <br/>
+               <label htmlFor="dg11">DG11:</label> <input id="dg11" type="text" name="dg11" /> <br/>
+               <label htmlFor="dg12">DG12:</label> <input id="dg12" type="text" name="dg12" /> <br/>
+               <label htmlFor="dg13">DG13:</label> <input id="dg13" type="text" name="dg13" /> <br/>
+               <label htmlFor="dg14">DG14:</label> <input id="dg14" type="text" name="dg14" /> <br/>
+               <label htmlFor="dg15">DG15:</label> <input id="dg15" type="text" name="dg15" /> <br/>
+               <label htmlFor="dg16">DG16:</label> <input id="dg16" type="text" name="dg16" /> <br/>
+               <label htmlFor="dg17">DG17:</label> <input id="dg17" type="text" name="dg17" /> <br/>
+               <label htmlFor="dg18">DG18:</label> <input id="dg18" type="text" name="dg18" /> <br/>
+               <label htmlFor="dg19">DG19:</label> <input id="dg19" type="text" name="dg19" /> <br/>
+               <label htmlFor="dg20">DG20:</label> <input id="dg20" type="text" name="dg20" /> <br/>
+           </div>
+           <div style={{ float: 'right', marginTop: '15px' }}>
+               <JqxButton ref='okButton' width={80} value='OK' style={{ display: 'inline-block', marginRight: 10 }} className='ok' />
+               <JqxButton ref='cancelButton' width={80} value='Cancel' style={{ display: 'inline-block' }} className='cancel' />
+           </div>
+       </div>
+    </JqxWindow>
+
+</div>
+
+)
+}
 }
 
 export default connect(null)(FuncProcesesDataMovesGrid)

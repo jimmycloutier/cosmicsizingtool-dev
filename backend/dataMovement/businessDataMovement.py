@@ -55,17 +55,13 @@ class BusinessDataMovement(object):
             dm.dmName = getattr(received_dm, 'Name', dm.dmName)
 
             move = getattr(received_dm, 'Move', dm.movement)
-            print('Move is:' +move)
             if move:
-                print('In move')
                 if isValidMove(move):
-                    print('Is valid move')
                     dm.movement = move
+                    db.session.commit()
+                    return True
                 else:
-                    print('Is NOT valid move')
-
-            db.session.commit()
-            return True
+                    return False
         else:
             return False
 
